@@ -1169,6 +1169,7 @@ public:
       - home.jpg
       - coffeeshop.jpg
       - board.jpg
+  # Please if editing an version here, also edit in bigbluebutton-html5/client/main.html
   minBrowserVersions:
     safari: ">=14"
     chrome: ">=87"
