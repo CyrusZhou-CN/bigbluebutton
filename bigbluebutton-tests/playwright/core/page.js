@@ -377,6 +377,16 @@ class Page {
     const ytFrame = new Page(this.page.browser, frame);
     return ytFrame;
   }
+
+  async hasElementChecked(selector, value, description) {
+    const locator = await this.page.locator(selector);
+    await expect(locator, description).toBeChecked(value);
+  }
+
+  async hasElementNotChecked(selector, value, description) {
+    const locator = await this.page.locator(selector);
+    await expect(locator, description).not.toBeChecked(value);
+  }
 }
 
 module.exports = exports = Page;

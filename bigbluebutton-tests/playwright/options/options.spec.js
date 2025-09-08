@@ -1,6 +1,7 @@
 const { test } = require('../fixtures');
 const { fullyParallel } = require('../playwright.config');
 const { Options } = require('./options');
+const { DataSavings } = require('./dataSavings');
 const { initializePages } = require('../core/helpers');
 
 test.describe('Options', { tag: '@ci' }, () => {
@@ -30,4 +31,12 @@ test.describe('Options', { tag: '@ci' }, () => {
   test('Font size', async () => {
     await options.fontSizeTest();
   });
+
+  test.describe('Data savings', () => {
+    test('Webcam settings', async ({browser, context,  page }) => {
+      const datasavings = new DataSavings(browser, context);
+      await datasavings.initPages(page)
+      await datasavings.enableOtherParticipantsWebcams();
+    })
+  })
 });
