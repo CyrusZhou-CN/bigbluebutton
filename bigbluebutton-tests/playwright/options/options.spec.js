@@ -33,10 +33,16 @@ test.describe('Options', { tag: '@ci' }, () => {
   });
 
   test.describe('Data savings', () => {
-    test('Webcam settings', async ({browser, context,  page }) => {
+    test('Webcam sharing settings', async ({ browser, context, page }) => {
       const datasavings = new DataSavings(browser, context);
       await datasavings.initPages(page)
       await datasavings.enableOtherParticipantsWebcams();
+    })
+
+    test('Desktop sharing settings', async ({ browser, context, page }) => {
+      const datasavings = new DataSavings(browser, context);
+      await datasavings.initPages(page)
+      await datasavings.enableOtherParticipantsDesktopSharing();
     })
   })
 });
