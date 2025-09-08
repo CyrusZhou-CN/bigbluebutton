@@ -71,6 +71,7 @@ class DataSaving extends BaseMenu {
                       ariaLabelledBy="webcamToggle"
                       ariaLabel={`${intl.formatMessage(intlMessages.webcamLabel)} - ${displaySettingsStatus(viewParticipantsWebcams, true)}`}
                       showToggleLabel={showToggleLabel}
+                      data-test="webcamToggleBtn"
                     />
                   </Styled.FormElementRight>
                 </Styled.Col>

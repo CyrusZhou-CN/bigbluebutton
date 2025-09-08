@@ -244,6 +244,7 @@ exports.processingPresentationItem = 'span[data-test="processingPresentationItem
 exports.uploadDoneIcon = 'i[data-test="uploadDoneIcon"]';
 exports.noButton = 'button[aria-label="No"]';
 exports.yesButton = 'button[aria-label="Yes"]';
+
 // Toasts
 exports.savedSettingsToast = 'Settings have been saved';
 exports.publicChatToast = 'New Public Chat message';
@@ -256,6 +257,7 @@ exports.attendeeJoinedToast = 'Attendee joined the session';
 exports.raisingHandToast = 'You have raised your hand';
 exports.loweringHandToast = 'Your hand has been lowered';
 exports.noActiveMicrophoneToast = 'No active microphone. Share your microphone to add audio to this recording.';
+
 // Icons
 const baseBbbIcon = 'i.icon-bbb-';
 exports.unmuteIcon = `${baseBbbIcon}unmute`;
@@ -370,6 +372,7 @@ exports.languageSelector = 'select[id="langSelector"]';
 exports.messageTitle = 'h2[data-test="messageTitle"]';
 exports.notesTitle = 'h2[data-test="notesTitle"]';
 exports.dataSavingsTab = 'span[id="dataSaving"]';
+exports.enableWebcamsToggleBtn = 'input[data-test="webcamToggleBtn"]';
 
 // User
 const userAvatar = 'div[data-test-avatar="userAvatar"]';
@@ -478,7 +481,6 @@ exports.dropAreaSidebarBottom = 'div[data-test="dropArea-sidebarContentBottom"]'
 exports.selfViewDisableBtn = 'li[data-test="selfViewDisableBtn"]';
 exports.nextPageVideoPagination = 'button[data-test="nextPageVideoPaginationBtn"]';
 exports.previousPageVideoPagination = 'button[data-test="previousPageVideoPaginationBtn"]';
-
 exports.videoQualitySelector = 'select[id="setQuality"]';
 exports.webcamItemTalkingUser = 'div[data-test="webcamItemTalkingUser"]';
 exports.webcamSettingsModal = 'div[data-test="webcamSettingsModal"]';
