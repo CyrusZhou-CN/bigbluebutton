@@ -98,6 +98,7 @@ class DataSaving extends BaseMenu {
                       ariaLabelledBy="screenShare"
                       ariaLabel={`${intl.formatMessage(intlMessages.screenShareLabel)} - ${displaySettingsStatus(viewScreenshare, true)}`}
                       showToggleLabel={showToggleLabel}
+                      data-test="desktopSharingToggleBtn"
                     />
                   </Styled.FormElementRight>
                 </Styled.Col>
