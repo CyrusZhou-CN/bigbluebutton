@@ -1,7 +1,6 @@
 const { test } = require('../fixtures');
 const { fullyParallel } = require('../playwright.config');
 const { Options } = require('./options');
-const { DataSavings } = require('./dataSavings');
 const { initializePages } = require('../core/helpers');
 
 test.describe('Options', { tag: '@ci' }, () => {
@@ -33,16 +32,14 @@ test.describe('Options', { tag: '@ci' }, () => {
   });
 
   test.describe('Data savings', () => {
-    test('Webcam sharing settings', async ({ browser, context, page }) => {
-      const datasavings = new DataSavings(browser, context);
-      await datasavings.initPages(page)
-      await datasavings.enableOtherParticipantsWebcams();
+    test('Webcam sharing settings', async () => {
+      await options.initUserPage(true, options.modPage.context)
+      await options.enableOtherParticipantsWebcams();
     })
 
-    test('Desktop sharing settings', async ({ browser, context, page }) => {
-      const datasavings = new DataSavings(browser, context);
-      await datasavings.initPages(page)
-      await datasavings.enableOtherParticipantsDesktopSharing();
+    test('Desktop sharing settings', async () => {
+      await options.initUserPage(true, options.modPage.context)
+      await options.enableOtherParticipantsDesktopSharing();
     })
   })
 });
