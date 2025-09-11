@@ -225,6 +225,9 @@ layout['areas'].each do |area|
   logger.debug("    #{area['name']}: position: #{area['x']}x#{area['y']}, size: #{area['width']}x#{area['height']}")
 end
 
+# Ensure the presentation video is not generated unless there is a presentation area in the selected layout
+have_presentation = false unless layout['areas'].any? { |area| area['name'] == 'presentation' }
+
 layout.symbolize_keys!
 layout[:areas].each do |area|
   area.symbolize_keys!
