@@ -14,7 +14,7 @@ playback_dir: /usr/local/bigbluebutton/core/playback/video
 audio_offset: 0
 
 # The preset to use for a specific meeting can be set using the bbb-recording-video-preset meta
-# parameter. This default will be used if no preset is set, or if a value is specifed which does
+# parameter. This default will be used if no preset is set, or if a value is specified which does
 # not match a known preset.
 default_preset: "720p"
 
@@ -70,7 +70,7 @@ presets:
       # The order of layouts is important - the first one that matches will be used.
       # If none of the layouts specified here match, then the layout from the 'layout' key will be
       # used instead.
-      
+
       # Have the webcams cover the whole area of the video if the session did not use screenshare
       # or the presentation area
       - required: [ webcam ]
@@ -149,7 +149,7 @@ presets:
       - mimetype: 'video/mp4'
         extension: m4v
         parameters:
-          - [ '-c:v', 'copy', # Use working format codec defined in 
+          - [ '-c:v', 'copy',
               '-c:a', 'aac', '-b:a', '128K',
               '-f', 'mp4', '-movflags', 'faststart' ]
         postprocess: []

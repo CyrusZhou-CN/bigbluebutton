@@ -26,7 +26,7 @@ opts = Optimist.options do
   opt :meeting_id, 'Meeting id to publish', type: String
   opt :stderr, 'Log output to stderr'
 end
-Optimist.dir :meeting_id, 'must be provided' unless opts[:meeting_id]
+Optimist.die :meeting_id, 'must be provided' unless opts[:meeting_id]
 
 match = /(.*)-(.*)/.match(opts[:meeting_id])
 meeting_id = match[1]

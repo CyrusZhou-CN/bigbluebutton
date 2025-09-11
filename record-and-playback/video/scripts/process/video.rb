@@ -87,7 +87,7 @@ metadata = events.at_xpath('/recording/metadata')
 logger.info 'Checking whether webcams were used'
 have_webcams = BigBlueButton::Events.have_webcam_events(events)
 if have_webcams
-  logger.info('Webcams were use in this session')
+  logger.info('Webcams were used in this session')
 else
   logger.info('No webcams were used in this session')
 end
