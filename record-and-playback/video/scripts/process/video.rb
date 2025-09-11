@@ -154,7 +154,7 @@ logger.info("Media present in recording: #{media.to_a.inspect}")
 # Find a specific layout based on layout constraints listed in the config file
 specific_layout, _layout_index = preset.fetch('layouts', []).each_with_index.find do |sl, i|
   required = Set.new(sl.fetch('required', []))
-  supported = Set.new(sl.fetch('areas', preset.fetch('areas', [])).map { |area| area['name'] })
+  supported = Set.new(sl.fetch('areas', layout.fetch('areas', [])).map { |area| area['name'] })
 
   if !media.superset?(required)
     logger.debug("Not using layout #{i} - missing required media #{(required - media).to_a.inspect}")
