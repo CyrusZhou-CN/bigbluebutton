@@ -1169,16 +1169,6 @@ public:
       - home.jpg
       - coffeeshop.jpg
       - board.jpg
-  # Please if editing an version here, also edit in bigbluebutton-html5/client/main.html
-  minBrowserVersions:
-    safari: ">=14"
-    chrome: ">=87"
-    firefox: ">=80"
-    edge: ">=85"
-    miui: "<0"
-    mobile:
-      safari: ">=14"
-      chrome: ">=87"
 private:
   analytics:
     includeChat: true
