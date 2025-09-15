@@ -470,7 +470,7 @@ exports.selectCustomBackground = 'button[data-test="selectCustomBackground"]';
 exports.removeCustomBackground = 'button[data-test="removeCustomBackground"]';
 exports.inputBackgroundButton = 'button[data-test="inputBackgroundButton"]';
 exports.noneBackgroundButton = 'button[data-test="noneBackgroundButton"]';
-exports.dropAreaBottom = 'div[data-test="dropArea-contentLeft"]';
+exports.dropAreaBottom = 'div[data-test="dropArea-contentBottom"]';
 exports.dropAreaLeft = 'div[data-test="dropArea-contentLeft"]';
 exports.dropAreaRight = 'div[data-test="dropArea-contentRight"]';
 exports.dropAreaTop = 'div[data-test="dropArea-contentTop"]';
@@ -478,7 +478,6 @@ exports.dropAreaSidebarBottom = 'div[data-test="dropArea-sidebarContentBottom"]'
 exports.selfViewDisableBtn = 'li[data-test="selfViewDisableBtn"]';
 exports.nextPageVideoPagination = 'button[data-test="nextPageVideoPaginationBtn"]';
 exports.previousPageVideoPagination = 'button[data-test="previousPageVideoPaginationBtn"]';
-
 exports.videoQualitySelector = 'select[id="setQuality"]';
 exports.webcamItemTalkingUser = 'div[data-test="webcamItemTalkingUser"]';
 exports.webcamSettingsModal = 'div[data-test="webcamSettingsModal"]';
