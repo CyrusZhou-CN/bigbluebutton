@@ -84,23 +84,36 @@ class Layouts extends MultiUsers {
 
     // Presenter minimizes presentation
     await this.modPage.waitAndClick(e.minimizePresentation);
-    await this.modPage.wasRemoved(e.presentationContainer, 'should the presentation be minimized for the moderator');
+    await this.modPage.wasRemoved(e.presentationContainer, 'should the presentation be minimized for the moderator, after clicking the minimize button');
     await this.modPage.hasElement(e.restorePresentation, 'should have the presentation minimized and the restore presentation button should appear for the moderator');
-    await this.userPage.wasRemoved(e.presentationContainer, 'should the presentation be minimized for the attendee');
-    await this.userPage.hasElement(e.restorePresentation, 'should the presentation be minimized and the restore presentation button should appear for the attendee');
+    await this.userPage.wasRemoved(e.presentationContainer, 'should the presentation be minimized for the attendee, after the moderator clicks the minimize button');
+    await this.userPage.hasElement(e.restorePresentation, 'should the presentation be minimized and the restore presentation button should appear for the attendee, after the moderator clicks the minimize button');
 
     // Only the user restores presentation
     await this.userPage.waitAndClick(e.restorePresentation);
-    await this.userPage.hasElement(e.presentationContainer, 'should display the restored presentation for the attendee');
+    await this.userPage.hasElement(e.presentationContainer, 'should display the restored presentation for the attendee after clicking the restore button');
     await this.userPage.hasElement(e.minimizePresentation, 'should appear the minimize presentation button for the attendee');
-    await this.modPage.wasRemoved(e.presentationContainer, 'should the presentation be minimized for the moderator');
-    await this.modPage.hasElement(e.restorePresentation, 'should be displayed the restore presentation button for the moderator');
+    await this.modPage.wasRemoved(e.presentationContainer, 'should the presentation be minimized still for the moderator, after the attendee clicks the restore button');
+    await this.modPage.hasElement(e.restorePresentation, 'should still be displayed the restore presentation button for the moderator, after the attendee clicks the restore button');
 
     await this.modPage.waitAndClick(e.restorePresentation);
     await this.modPage.closeAllToastNotifications();
-    await this.modPage.dragAndDropWebcams(e.dropAreaSidebarBottom);
 
-    await checkScreenshots(this, 'layout should be updated for everyone', 'video', 'update-everyone');
+    // Drag and drop webcams to different locations
+    await this.modPage.dragAndDropWebcams(e.dropAreaSidebarBottom);
+    await checkScreenshots(this, 'layout should be updated for everyone after dragging and droping webcam in sidebar bottom dock area', 'video', 'update-everyone', 1);
+    
+    await this.modPage.dragAndDropWebcams(e.dropAreaRight);
+    await checkScreenshots(this, 'layout should be updated for everyone after dragging and droping webcam in right dock area', 'video', 'update-everyone', 2);
+
+    await this.modPage.dragAndDropWebcams(e.dropAreaBottom);
+    await checkScreenshots(this, 'layout should be updated for everyone after dragging and droping webcam in bottom dock area', 'video', 'update-everyone', 3);
+
+    await this.modPage.dragAndDropWebcams(e.dropAreaLeft);
+    await checkScreenshots(this, 'layout should be updated for everyone after dragging and droping webcam in left dock area', 'video', 'update-everyone', 4);
+    
+    await this.modPage.dragAndDropWebcams(e.dropAreaTop);
+    await checkScreenshots(this, 'layout should be updated for everyone after dragging and droping webcam in top dock area', 'video', 'update-everyone', 5);
   }
 
   async getNewPageTab(browser) {
