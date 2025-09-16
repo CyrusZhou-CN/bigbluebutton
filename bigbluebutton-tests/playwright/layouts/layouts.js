@@ -101,19 +101,19 @@ class Layouts extends MultiUsers {
 
     // Drag and drop webcams to different locations
     await this.modPage.dragAndDropWebcams(e.dropAreaSidebarBottom);
-    await checkScreenshots(this, 'layout should be updated for everyone after dragging and droping webcam in sidebar bottom dock area', 'video', 'update-everyone', 1);
+    await checkScreenshots(this, 'layout should be updated for everyone after dragging and dropping webcam in sidebar bottom dock area', 'video', 'update-everyone', 1);
     
     await this.modPage.dragAndDropWebcams(e.dropAreaRight);
-    await checkScreenshots(this, 'layout should be updated for everyone after dragging and droping webcam in right dock area', 'video', 'update-everyone', 2);
+    await checkScreenshots(this, 'layout should be updated for everyone after dragging and dropping webcam in right dock area', 'video', 'update-everyone', 2);
 
     await this.modPage.dragAndDropWebcams(e.dropAreaBottom);
-    await checkScreenshots(this, 'layout should be updated for everyone after dragging and droping webcam in bottom dock area', 'video', 'update-everyone', 3);
+    await checkScreenshots(this, 'layout should be updated for everyone after dragging and dropping webcam in bottom dock area', 'video', 'update-everyone', 3);
 
     await this.modPage.dragAndDropWebcams(e.dropAreaLeft);
-    await checkScreenshots(this, 'layout should be updated for everyone after dragging and droping webcam in left dock area', 'video', 'update-everyone', 4);
+    await checkScreenshots(this, 'layout should be updated for everyone after dragging and dropping webcam in left dock area', 'video', 'update-everyone', 4);
     
     await this.modPage.dragAndDropWebcams(e.dropAreaTop);
-    await checkScreenshots(this, 'layout should be updated for everyone after dragging and droping webcam in top dock area', 'video', 'update-everyone', 5);
+    await checkScreenshots(this, 'layout should be updated for everyone after dragging and dropping webcam in top dock area', 'video', 'update-everyone', 5);
   }
 
   async getNewPageTab(browser) {
