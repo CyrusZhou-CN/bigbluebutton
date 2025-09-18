@@ -44,6 +44,7 @@ case class PluginManifestContent(
     enabledForBreakoutRooms:       Boolean                              = false,
     javascriptEntrypointIntegrity: Option[String]                       = None,
     localesBaseUrl:                Option[String]                       = None,
+    allowCustomMessageEditing:     Boolean                              = false,
     eventPersistence:              Option[EventPersistence]             = None,
     dataChannels:                  Option[List[DataChannel]]            = None,
     remoteDataSources:             Option[List[RemoteDataSource]]       = None,

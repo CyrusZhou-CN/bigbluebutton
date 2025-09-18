@@ -34,6 +34,7 @@ export const CHAT_MESSAGE_PUBLIC_SUBSCRIPTION = gql`
           userId
         }
       }
+      allowEditing
       messageType
       chatEmphasizedText
       chatId

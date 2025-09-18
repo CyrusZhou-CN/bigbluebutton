@@ -372,23 +372,25 @@ const ChatMessage = React.forwardRef<ChatMessageRef, ChatMessageProps>(({
   const currentPluginMessageMetadata: {
     custom: boolean;
     pluginName: string;
-    pluginCustomMetadata?: any;
+    pluginCustomMetadata?: unknown;
   } | null = useMemo(() => {
     if (message.messageType === ChatMessageType.PLUGIN) {
       const parsedPluginData = JSON.parse(message.messageMetadata);
-      const isParsedPluginDataValid = 'custom' in parsedPluginData 
+      const isParsedPluginDataValid = 'custom' in parsedPluginData
         && 'pluginName' in parsedPluginData;
-      if (isParsedPluginDataValid) return {
-        custom: parsedPluginData.custom,
-        pluginName: parsedPluginData?.pluginName,
-        pluginCustomMetadata: parsedPluginData?.pluginName,
-      };
+      if (isParsedPluginDataValid) {
+        return {
+          custom: parsedPluginData.custom,
+          pluginName: parsedPluginData?.pluginName,
+          pluginCustomMetadata: parsedPluginData?.pluginName,
+        };
+      }
     }
     return null;
   }, [message]);
   const isCustomPluginMessage: boolean = currentPluginMessageMetadata !== null && currentPluginMessageMetadata.custom;
   const isMessageFromPlugin = message.messageType === ChatMessageType.PLUGIN;
-  
+
   const dateTime = new Date(message?.createdAt);
   const formattedTime = intl.formatTime(dateTime, {
     hour: 'numeric',
@@ -717,6 +719,7 @@ const ChatMessage = React.forwardRef<ChatMessageRef, ChatMessageProps>(({
       role="listitem"
     >
       <ChatMessageToolbar
+        allowEditing={message.allowEditing}
         hasToolbar={hasToolbar && messageContent.showToolbar}
         locked={locked}
         deleted={!!deleteTime}
@@ -760,7 +763,9 @@ const ChatMessage = React.forwardRef<ChatMessageRef, ChatMessageProps>(({
             {intl.formatMessage(intlMessages.pluginMetadataInformation, {
               userName: message.user.name,
               pluginName: currentPluginMessageMetadata?.pluginName,
-            })} &nbsp;
+            })}
+            {' '}
+            &nbsp;
             <FormattedTime value={dateTime} hour12={false} />
           </PluginInformationMetadata>
         )
@@ -828,7 +833,7 @@ const ChatMessage = React.forwardRef<ChatMessageRef, ChatMessageProps>(({
     </Popover>
   );
 
-  const focusable = !deleteTime 
+  const focusable = !deleteTime
     && (!messageContent.isSystemSender || message.messageType === ChatMessageType.POLL)
     && !isCustomPluginMessage;
 

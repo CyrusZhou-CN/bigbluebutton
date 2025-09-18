@@ -5,6 +5,7 @@ import org.bigbluebutton.common2.msgs._
 import org.bigbluebutton.core.apps.PermissionCheck
 import org.bigbluebutton.core.bus.MessageBus
 import org.bigbluebutton.core.domain.MeetingState2x
+import org.bigbluebutton.core.models.PluginModel.getPluginManifestContentByName
 import org.bigbluebutton.core.running.{ HandlerHelpers, LiveMeeting }
 import org.bigbluebutton.core.models.Users2x
 import org.bigbluebutton.core2.MeetingStatus2x
@@ -97,7 +98,23 @@ trait SendGroupChatMessageMsgHdlr extends HandlerHelpers {
             }
           }
 
-          val gcMessage = GroupChatApp.toGroupChatMessage(sender, groupChatMsgReceived, emphasizedText)
+          val allowEditing: Boolean =
+            if (messageType == GroupChatMessageType.PLUGIN) {
+              (for {
+                pluginNameValue <- msg.body.msg.metadata.get("pluginName")
+                pluginName = pluginNameValue.toString
+                customValue <- msg.body.msg.metadata.get("custom")
+                customStr = customValue.toString
+                plugin <- getPluginManifestContentByName(liveMeeting.plugins, pluginName)
+              } yield {
+                val custom = customStr.toBooleanOption.getOrElse(false)
+                if (custom) plugin.allowCustomMessageEditing else true
+              }).getOrElse(true)
+            } else {
+              true
+            }
+
+          val gcMessage = GroupChatApp.toGroupChatMessage(sender, groupChatMsgReceived, emphasizedText, allowEditing)
           val updatedGroupChat = GroupChatApp.addGroupChatMessage(liveMeeting.props.meetingProp.intId, chat, state.groupChats, gcMessage, messageType)
 
           val event = buildGroupChatMessageBroadcastEvtMsg(

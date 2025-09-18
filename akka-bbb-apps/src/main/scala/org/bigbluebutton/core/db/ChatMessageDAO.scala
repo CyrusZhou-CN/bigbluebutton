@@ -15,6 +15,7 @@ case class ChatMessageDbModel(
     messageMetadata:    Option[String],
     senderId:           Option[String],
     senderName:         String,
+    allowEditing:       Boolean,
     senderRole:         Option[String],
     createdAt:          java.sql.Timestamp,
     editedAt:           Option[java.sql.Timestamp],
@@ -34,6 +35,7 @@ class ChatMessageDbTableDef(tag: Tag) extends Table[ChatMessageDbModel](tag, Non
   val messageMetadata = column[Option[String]]("messageMetadata")
   val senderId = column[Option[String]]("senderId")
   val senderName = column[String]("senderName")
+  val allowEditing = column[Boolean]("allowEditing")
   val senderRole = column[Option[String]]("senderRole")
   //  val chat = foreignKey("chat_message_chat_fk", (chatId, meetingId), ChatTable.chats)(c => (c.chatId, c.meetingId), onDelete = ForeignKeyAction.Cascade)
   //  val sender = foreignKey("chat_message_sender_fk", senderId, UserTable.users)(_.userId, onDelete = ForeignKeyAction.SetNull)
@@ -44,7 +46,7 @@ class ChatMessageDbTableDef(tag: Tag) extends Table[ChatMessageDbModel](tag, Non
 
   override def * = (
     messageId, chatId, meetingId, correlationId, chatEmphasizedText,
-    message, messageType, replyToMessageId, messageMetadata, senderId, senderName, senderRole,
+    message, messageType, replyToMessageId, messageMetadata, senderId, senderName, allowEditing, senderRole,
     createdAt, editedAt, deletedByUserId, deletedAt
   ) <> (ChatMessageDbModel.tupled, ChatMessageDbModel.unapply)
 }
@@ -73,6 +75,7 @@ object ChatMessageDAO {
           editedAt = None,
           deletedByUserId = None,
           deletedAt = None,
+          allowEditing = groupChatMessage.allowEditing,
         )
       )
     )
@@ -101,6 +104,7 @@ object ChatMessageDAO {
           editedAt = None,
           deletedByUserId = None,
           deletedAt = None,
+          allowEditing = true,
         )
       )
     )

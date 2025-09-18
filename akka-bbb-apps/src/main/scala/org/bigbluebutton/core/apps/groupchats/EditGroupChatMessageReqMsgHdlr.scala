@@ -52,17 +52,21 @@ trait EditGroupChatMessageReqMsgHdlr extends HandlerHelpers {
           val chatIsPrivate = groupChat.access == GroupChatAccess.PRIVATE
           val userIsAParticipant = groupChat.users.exists(u => u.id == user.intId)
           val userIsOwner = gcMessage.sender.id == user.intId
+          val allowMessageEditing = gcMessage.allowEditing
 
           if ((chatIsPrivate && userIsAParticipant) || !chatIsPrivate) {
-            if (userIsOwner) {
+            if (userIsOwner && allowMessageEditing) {
               val editedGCMessage = gcMessage.copy(message = msg.body.message)
               val updatedGroupChat = GroupChatApp.updateGroupChatMessage(liveMeeting.props.meetingProp.intId, groupChat, state.groupChats, editedGCMessage)
 
               val event = buildGroupChatMessageEditedEvtMsg(liveMeeting.props.meetingProp.intId, msg.body.chatId, msg.header.userId, editedGCMessage)
               bus.outGW.send(event)
               newState = state.update(updatedGroupChat)
-            } else {
+            } else if (!userIsOwner) {
               val reason = "User doesn't have permission to edit chat message"
+              PermissionCheck.ejectUserForFailedPermission(msg.header.meetingId, msg.header.userId, reason, bus.outGW, liveMeeting)
+            } else {
+              val reason = "Editing is not allowed for this chat message"
               PermissionCheck.ejectUserForFailedPermission(msg.header.meetingId, msg.header.userId, reason, bus.outGW, liveMeeting)
             }
           } else {
