@@ -1127,7 +1127,6 @@ CREATE UNLOGGED TABLE "chat_message" (
 	"messageMetadata" text,
     "senderId" varchar(100),
     "senderName" varchar(255),
-    "allowEditing" BOOLEAN,
 	"senderRole" varchar(20),
 	"createdAt" timestamp with time zone not null,
 	"editedAt" timestamp with time zone,

@@ -719,7 +719,7 @@ const ChatMessage = React.forwardRef<ChatMessageRef, ChatMessageProps>(({
       role="listitem"
     >
       <ChatMessageToolbar
-        allowEditing={message.allowEditing}
+        isCustomPluginMessage={isCustomPluginMessage}
         hasToolbar={hasToolbar && messageContent.showToolbar}
         locked={locked}
         deleted={!!deleteTime}

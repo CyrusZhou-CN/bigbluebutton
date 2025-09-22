@@ -56,7 +56,6 @@ select_permissions:
         - correlationId
         - createdAt
         - deletedAt
-        - allowEditing
         - message
         - messageId
         - messageMetadata

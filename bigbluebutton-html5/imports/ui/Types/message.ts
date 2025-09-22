@@ -1,7 +1,6 @@
 import { User } from './user';
 
 export interface Message {
-  allowEditing: boolean;
   chatEmphasizedText: boolean;
   chatId: string;
   correlationId: string;
