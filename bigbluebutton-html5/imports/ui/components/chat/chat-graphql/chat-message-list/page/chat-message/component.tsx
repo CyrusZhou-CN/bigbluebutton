@@ -703,6 +703,8 @@ const ChatMessage = React.forwardRef<ChatMessageRef, ChatMessageProps>(({
     avatarDisplay = <i className={messageContent.avatarIcon} />;
   }
 
+  const showPluginMetadataFooter = !deleteTime && isMessageFromPlugin && currentUserIsModerator;
+
   const contentElement = (
     <ChatMessageContentWrapper
       className="chat-message-content"
@@ -758,7 +760,7 @@ const ChatMessage = React.forwardRef<ChatMessageRef, ChatMessageProps>(({
         </MessageItemWrapper>
       )}
       {
-        (isMessageFromPlugin && currentUserIsModerator) && (
+        (showPluginMetadataFooter) && (
           <PluginInformationMetadata>
             {intl.formatMessage(intlMessages.pluginMetadataInformation, {
               userName: message.user.name,
