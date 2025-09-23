@@ -37,6 +37,19 @@ case class PluginSettingSchema(
     label:        Option[String] = None
 )
 
+case class ServerCommandConfiguration(
+    allowedRoles: Option[List[String]]
+)
+
+case class ChatServerCommandConfiguration(
+    sendPublicChatMessage: Option[ServerCommandConfiguration],
+    sendCustomPublicChatMessage: Option[ServerCommandConfiguration]
+)
+
+case class ServerCommandDirective(
+    chat: Option[ChatServerCommandConfiguration],
+)
+
 case class PluginManifestContent(
     requiredSdkVersion:            String,
     name:                          String,
@@ -47,6 +60,7 @@ case class PluginManifestContent(
     eventPersistence:              Option[EventPersistence]             = None,
     dataChannels:                  Option[List[DataChannel]]            = None,
     remoteDataSources:             Option[List[RemoteDataSource]]       = None,
+    serverCommand:                 Option[ServerCommandDirective]       = None,
     settingsSchema:                Option[List[PluginSettingSchema]]    = None,
 )
 
@@ -128,8 +142,6 @@ object PluginModel {
       case _ => "none"
     }
   }
-
-
 
   private def addPluginSettingEntry(currentPluginSettings: Map[String, ClientSettings.Plugin],
                                       pluginName: String, settingKey: String, settingValue: Any): Map[String, ClientSettings.Plugin]= {
@@ -318,6 +330,22 @@ object PluginModel {
       }
 
     }
+  }
+
+  object ServerCommands {
+    def getPluginPermissionForCustomMessage(plugin: PluginManifestContent): Option[List[String]] = for {
+      serverCommands <- plugin.serverCommand
+      chatCommands <- serverCommands.chat
+      customCommand <- chatCommands.sendCustomPublicChatMessage
+      roles <- customCommand.allowedRoles
+    } yield roles
+
+    def getPluginPermissionForCommonMessage(plugin: PluginManifestContent): Option[List[String]] = for {
+      serverCommands <- plugin.serverCommand
+      chatCommands <- serverCommands.chat
+      customCommand <- chatCommands.sendPublicChatMessage
+      roles <- customCommand.allowedRoles
+    } yield roles
   }
 }
 

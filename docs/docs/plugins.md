@@ -190,8 +190,8 @@ Here is as complete `manifest.json` example with all possible configurations:
   "dataChannels":[
     {
       "name": "public-channel",
-      "pushPermission": ["moderator","presenter"], // "moderator","presenter", "all"
-      "replaceOrDeletePermission": ["moderator", "creator"] // "moderator", "presenter","all", "creator"
+      "pushPermission": ["moderator","presenter"], // "moderator","presenter", "all", "viewer"
+      "replaceOrDeletePermission": ["moderator", "creator"] // "moderator", "presenter","all", "viewer", "creator"
     }
   ], // One can enable more data-channels to better organize client communication
   "eventPersistence": {
@@ -205,6 +205,18 @@ Here is as complete `manifest.json` example with all possible configurations:
       "permissions": ["moderator", "viewer"]
     }
   ],
+  "serverCommand": {
+    "chat": {
+      "sendPublicChatMessage": {
+        "allowedRoles": [
+          "all"
+        ]
+      },
+      "sendCustomPublicChatMessage": {
+        "allowedRoles": ["presenter", "moderator"] // "moderator","presenter", "all", "viewer"
+      }
+    }
+  }
   "settingsSchema": [
     {
       "name": "myJson",
@@ -1014,17 +1026,38 @@ So the idea is that we have a `uiCommands` object and at a point, there will be 
 
 ### Server Commands
 
-  `serverCommands` object: It contains all the possible commands available to the developer to interact with the BBB core server, see the ones implemented down below:
+`serverCommands` object: It contains all the possible commands available to the developer to interact with the BBB core server, see the ones implemented down below:
 
   - chat:
     - sendPublicMessage: This function sends a message to the public chat on behalf of the currently logged-in user.
-
     - sendCustomPublicMessage: This function sends a text message to the public chat, optionally including custom metadata.
       > **Note**: The custom messages sent by plugins are not automatically rendered by the client. To display these messages, a plugin must handle the rendering using `useLoadedChatMessages` and `useChatMessageDomElements`.
 
   - caption:
     - save: this function saves the given text, locale and caption type
     - addLocale: this function sends a locale to be added to the available options
+
+As these commands can change state in the back-end, "permission control" is available based on role for some of the Commands, those are:
+  - chat:
+    - sendPublicMessage;
+    - sendCustomPublicMessage
+
+An example of the usage is displayed in the [Manifest](#manifest-json) section, but in general the idea is to have the same hierarchy as the server-commands from the SDK, see example ahead:
+
+```json
+"serverCommand": {
+  "chat": {
+    "sendPublicChatMessage": {
+      ... // Settings for manifest
+    },
+    "sendCustomPublicChatMessage": {
+      ... // Settings for manifest
+    }
+  }
+}
+```
+
+For now, the only supported settings for those commands are `allowedRoles` which is a list with the roles that are allowed to send the command.
 
 ### Dom Element Manipulation
 
@@ -1062,12 +1095,12 @@ This is possible by simply configuring the dataResource name in the manifest and
 {
   // ...rest of manifest configuration
   "remoteDataSources": [
-      {
-          "name": "allUsers",
-          "url": "${meta_pluginSettingsUserInformation}",
-          "fetchMode": "onMeetingCreate", // Possible values: "onMeetingCreate", "onDemand"
-          "permissions": ["moderator", "viewer"] // Possible values: "moderator", "viewer", "presenter"
-      }
+    {
+      "name": "allUsers",
+      "url": "${meta_pluginSettingsUserInformation}",
+      "fetchMode": "onMeetingCreate", // Possible values: "onMeetingCreate", "onDemand"
+      "permissions": ["moderator", "viewer"] // Possible values: "moderator", "viewer", "presenter"
+    }
   ]
 }
 ```

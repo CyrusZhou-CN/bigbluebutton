@@ -17,7 +17,7 @@ object GroupChatMessageType {
   val PLUGIN = "plugin"
 }
 
-case class GroupChatUser(id: String, name: String = "", role: String = "VIEWER")
+case class GroupChatUser(id: String, name: String = "", presenter: Boolean, role: String = "VIEWER")
 case class GroupChatMsgFromUser(
     correlationId:    String,
     sender:           GroupChatUser,
