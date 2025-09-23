@@ -489,6 +489,7 @@ exports.webcamItemTalkingUser = 'div[data-test="webcamItemTalkingUser"]';
 exports.webcamSettingsModal = 'div[data-test="webcamSettingsModal"]';
 exports.dropdownWebcamButton = 'div[data-test="dropdownWebcamButton"]';
 exports.webcamMirroredVideoPreview = 'video[data-test="mirroredVideoPreview"]';
+exports.resizeWebcamHandler = 'div#cameraDock + div > div[style*="user-select: none"]';
 
 // Whiteboard
 exports.whiteboard = 'div[data-testid="canvas"]';

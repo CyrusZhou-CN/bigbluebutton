@@ -184,6 +184,40 @@ class Webcam extends Page {
     const { videoPreviewTimeout, skipVideoPreview, skipVideoPreviewOnFirstJoin } = this.settings;
     await this.shareWebcam(!(skipVideoPreview || skipVideoPreviewOnFirstJoin), videoPreviewTimeout);
   }
+
+  async resizeWebcamArea() {
+    await this.waitForSelector(e.whiteboard);
+    await this.shareWebcam();
+    await this.hasElement(e.currentUserLocalStreamVideo, 'should display the webcam video after shared');
+
+    const { width, height: initialvideoHeight } = await this.getLocator(e.currentUserLocalStreamVideo).boundingBox();
+    const { height: initialVideoContainerHeight } = await this.getLocator(e.webcamMirroredVideoContainer).boundingBox();
+
+    await this.getLocator(e.resizeWebcamHandler).hover({ timeout: 5000, force: true });
+    await this.page.mouse.down();
+    await this.page.mouse.move(width, initialvideoHeight + 200, { steps: 10 });
+    await this.page.mouse.up();
+
+    const { height: resizedVideoHeight } = await this.getLocator(e.currentUserLocalStreamVideo).boundingBox();
+    const { height: resizedVideoContainerHeight } = await this.getLocator(e.webcamMirroredVideoContainer).boundingBox();
+    expect(resizedVideoHeight).toBeGreaterThan(initialvideoHeight);
+    expect(resizedVideoContainerHeight).toBeGreaterThan(initialVideoContainerHeight);
+
+    const webcamLocator = await this.getLocator(e.currentUserLocalStreamVideo);
+    await expect(webcamLocator).toHaveScreenshot('resize-webcam.png');
+
+    await this.getLocator(e.minimizePresentation).click();
+    await this.waitForSelector(e.restorePresentation);
+
+    const { height: fullMainContentHeight } = await this.getLocator(e.currentUserLocalStreamVideo).boundingBox();
+    expect(fullMainContentHeight).toBeGreaterThan(resizedVideoHeight);
+
+    await this.getLocator(e.restorePresentation).click();
+    await this.waitForSelector(e.minimizePresentation);
+    
+    const { height: resizedHeightAfterRestore } = await this.getLocator(e.currentUserLocalStreamVideo).boundingBox();
+    expect(resizedHeightAfterRestore).toBe(resizedVideoHeight);
+  }
 }
 
 exports.Webcam = Webcam;
