@@ -1246,6 +1246,31 @@ Where `<meeting-id>` is the id of the the meeting you just recorded. Then, among
 </event>
 ```
 
+## Guidelines
+
+This section outlines good practices for developing plugins.
+These are mandatory for official plugins developed by the BBB organization and its partners, in order to maintain reliability, security, and accountability.
+
+### Dom element manipulation guidelines
+
+Since plugins are loaded directly into the client, there is no technical restriction preventing developers from manipulating DOM elements arbitrarily. However, we strongly recommend following these practices:
+
+- Whenever possible, manipulate elements using the hooks provided by [dom-element-manipulation](#dom-element-manipulation);
+- If the functionality you need is not available, create an issue in the [SDK repository](https://github.com/bigbluebutton/bigbluebutton-html-plugin-sdk) or check if one of the [extensible areas](#extensible-ui-areas) can meet your needs;
+- **Never edit chat message contents directly** (even with DOM manipulation). Currently, the playback from the recordings portion of BBB does not support plugins or extensions. Any changes made to live chat messages (such as adding or removing words) will not be reflected in the recording, leading to inconsistencies and potential accountability issues.
+
+To emphasize: Do not alter the text content of chat messages. Doing so can cause severe reliability and accountability problems.
+
+Instead, the hook provided can do things such as changing the style for emphasizing certain word(s), create a completely different way of rendering the messages for a "notification" message in the chat (One can try to copy the style of the "change presenter" message).
+
+### Localization
+
+The Plugin SDK provides the `useLocaleMessages` hook, described in the [auxiliary functions](#auxiliary-functions) section. While its use is not mandatory, we highly recommend it because it handles certain edge cases that are otherwise difficult to predict.
+
+We also strongly encourage developers to include localization in their plugins. This greatly improves adoption and usability within the community.
+
+For a practical example, see how the [pick-random-user plugin](https://github.com/bigbluebutton/plugin-pick-random-user/blob/7259ec7f32ea0e3d851f4b6636a739a82a385896/src/commons/hooks.ts#L17) uses it in the `useGetInternationalization` hook.
+
 ## Frequently Asked Questions (FAQ)
 
 **How do I remove a certain extensible area that I don't want anymore?**
