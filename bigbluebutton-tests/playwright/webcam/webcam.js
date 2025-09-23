@@ -188,6 +188,7 @@ class Webcam extends Page {
   async resizeWebcamArea() {
     await this.waitForSelector(e.whiteboard);
     await this.shareWebcam();
+    await this.closeAllToastNotifications();
     await this.hasElement(e.currentUserLocalStreamVideo, 'should display the webcam video after shared');
 
     const { width, height: initialvideoHeight } = await this.getLocator(e.currentUserLocalStreamVideo).boundingBox();
@@ -214,7 +215,7 @@ class Webcam extends Page {
 
     await this.getLocator(e.restorePresentation).click();
     await this.waitForSelector(e.minimizePresentation);
-    
+
     const { height: resizedHeightAfterRestore } = await this.getLocator(e.currentUserLocalStreamVideo).boundingBox();
     expect(resizedHeightAfterRestore).toBe(resizedVideoHeight);
   }
