@@ -161,6 +161,7 @@ class Options extends MultiUsers {
     }
   }
 
+
   async enableOtherParticipantsWebcams() {
     await this.modPage.waitForSelector(e.whiteboard);
     await this.userPage.waitForSelector(e.whiteboard);
@@ -225,6 +226,34 @@ class Options extends MultiUsers {
     await sleep(500);
     await this.modPage.hasElement(e.screenShareVideo, 'should display the screenshare for the moderator');
     await this.userPage.wasRemoved(e.screenShareVideo, 'should not display the screenshare for the attendee');
+
+  async autoHideWhiteboardToolbar() {
+    await this.modPage.waitForSelector(e.whiteboard);
+    await this.modPage.hasElement(e.wbToolbar, 'should display the whiteboard toolbar when meeting starts');
+    await this.modPage.closeAllToastNotifications();
+
+    const whiteboardLocator = await this.modPage.getLocator(e.whiteboard);
+    await expect(whiteboardLocator).toHaveScreenshot('whiteboard-with-toolbar-visible.png');
+
+    await openSettings(this.modPage);
+    await this.modPage.waitAndClickElement(e.wbAutoHideToggleBtn);
+    await this.modPage.hasElementEnabled(e.wbAutoHideToggleBtn, 'should display the auto hide whiteboard toolbar toggle enabled after clicking it');
+
+    await this.modPage.waitAndClick(e.modalConfirmButton);
+    await this.modPage.waitForSelector(e.whiteboard);
+
+    const wbToolbarLocator = this.modPage.getLocator(e.wbToolbar);
+    await this.modPage.hoverElement(e.whiteboard);
+    await expect(wbToolbarLocator).toHaveClass(/fade-in/);
+    await this.modPage.hasElement(e.wbToolbar, 'should display the whiteboard toolbar when hover the whiteboard');
+
+    await this.modPage.hoverElement(e.chatButton)
+    await expect(wbToolbarLocator).toHaveClass(/fade-out/);
+    
+    await expect(whiteboardLocator).toHaveScreenshot('whiteboard-with-toolbar-hidden.png', {
+      maxDiffPixels: 1000,
+    });
+
   }
 }
 

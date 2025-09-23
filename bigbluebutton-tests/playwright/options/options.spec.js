@@ -7,8 +7,8 @@ test.describe('Options', { tag: '@ci' }, () => {
   const options = new Options();
 
   test.describe.configure({ mode: fullyParallel ? 'parallel' : 'serial' });
-  test[fullyParallel ? 'beforeEach' : 'beforeAll'](async ({ browser }) => {
-    await initializePages(options, browser);
+  test[fullyParallel ? 'beforeEach' : 'beforeAll'](async ({ browser }, testInfo) => {
+    await initializePages(options, browser, { testInfo });
   });
 
   test('Open about modal', async () => {
@@ -31,6 +31,7 @@ test.describe('Options', { tag: '@ci' }, () => {
     await options.fontSizeTest();
   });
 
+
   test.describe('Data savings', () => {
     test('Webcam sharing settings', async () => {
       await options.initUserPage(true, options.modPage.context)
@@ -42,4 +43,9 @@ test.describe('Options', { tag: '@ci' }, () => {
       await options.enableOtherParticipantsDesktopSharing();
     })
   })
+
+  test('Auto hide whiteboard toolbar', async () => {
+    await options.autoHideWhiteboardToolbar();
+  });
+
 });
