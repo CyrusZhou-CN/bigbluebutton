@@ -30,30 +30,34 @@ import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 public class ImageResolutionService {
-  private static Logger log = LoggerFactory.getLogger(ImageResolutionService.class);
+    private static Logger log = LoggerFactory.getLogger(ImageResolutionService.class);
 
-  private int wait = 5;
+    private int wait = 5;
 
-  public ImageResolution identifyImageResolution(File presentationFile) {
-
-    NuProcessBuilder imageResolution = new NuProcessBuilder(
-        Arrays.asList("/usr/share/bbb-web/run-in-systemd.sh", String.valueOf(wait),
-                "identify", "-format","%w %h", presentationFile.getAbsolutePath()));
-
-    ImageResolutionServiceHandler imgResHandler = new ImageResolutionServiceHandler("imgresolution-" + presentationFile.getName());
-    imageResolution.setProcessListener(imgResHandler);
-
-    NuProcess process = imageResolution.start();
-    try {
-      process.waitFor(wait + 1, TimeUnit.SECONDS);
-    } catch (InterruptedException e) {
-      log.error("InterruptedException while identifying image resolution {}", presentationFile.getName(), e);
+    public ImageResolution identifyImageResolution(File presentationFile) {
+        return identifyImageResolution(presentationFile.getAbsolutePath());
     }
 
-    return new ImageResolution(imgResHandler.getWidth(), imgResHandler.getHeight());
-  }
+    public ImageResolution identifyImageResolution(String presentationFileAbsolutePath) {
 
-  public void setWait(int wait) {
+        NuProcessBuilder imageResolution = new NuProcessBuilder(
+                Arrays.asList("/usr/share/bbb-web/run-in-systemd.sh", String.valueOf(wait),
+                        "identify", "-format","%w %h", presentationFileAbsolutePath));
+
+        ImageResolutionServiceHandler imgResHandler = new ImageResolutionServiceHandler("imgresolution-" + presentationFileAbsolutePath);
+        imageResolution.setProcessListener(imgResHandler);
+
+        NuProcess process = imageResolution.start();
+        try {
+            process.waitFor(wait + 1, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            log.error("InterruptedException while identifying image resolution {}", presentationFileAbsolutePath, e);
+        }
+
+        return new ImageResolution(imgResHandler.getWidth(), imgResHandler.getHeight());
+    }
+
+    public void setWait(int wait) {
     this.wait = wait;
   }
 }
