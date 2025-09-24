@@ -34,7 +34,7 @@ const LKAutoplayModalContainer: React.FC = () => {
       logCode: 'livekit_audio_autoplay_blocked',
     }, 'LiveKit: audio autoplay blocked');
     setIsOpen(true);
-  }, [LKAutoplayModal]);
+  }, [LKAutoplayModalState.isOpen]);
 
   const runAutoplayCallback = useCallback(async (indirect = false) => {
     try {

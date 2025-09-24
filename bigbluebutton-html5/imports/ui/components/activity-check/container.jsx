@@ -22,7 +22,6 @@ const ActivityCheckContainer = ({ intl }) => {
     id: 'ActivityCheckModal',
     priority: 'high',
   });
-  window.openActivityCheckModal = openActivityCheckModal;
 
   const inactivityWarningDisplay = currentUserData?.inactivityWarningDisplay;
   const inactivityWarningTimeoutSecs = currentUserData?.inactivityWarningTimeoutSecs;

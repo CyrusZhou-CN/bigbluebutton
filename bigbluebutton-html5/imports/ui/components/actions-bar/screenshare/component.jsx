@@ -249,7 +249,7 @@ const ScreenshareButton = ({
                 onClick={amIBroadcasting
                   ? screenshareHasEnded
                   : () => {
-                    if (true && isSafari && !ScreenshareBridgeService.HAS_DISPLAY_MEDIA) {
+                    if (isSafari && !ScreenshareBridgeService.HAS_DISPLAY_MEDIA) {
                       openScreenshareUnavailableModal();
                     } else {
                       // eslint-disable-next-line max-len

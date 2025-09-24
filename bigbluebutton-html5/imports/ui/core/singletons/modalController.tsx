@@ -214,7 +214,7 @@ export function useModalRegistration({
       if (uniqueRef.current) controller.unregister(uniqueRef.current);
       uniqueRef.current = null;
     };
-  }, [id]);
+  }, [id, priority]);
 
   const slice = useReactiveVar(modalStateVar);
   const uniqueId = uniqueRef.current;
