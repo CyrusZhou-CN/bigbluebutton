@@ -49,9 +49,14 @@ public class ImageResolutionService {
 
         NuProcess process = imageResolution.start();
         try {
-            process.waitFor(wait + 1, TimeUnit.SECONDS);
+            int returnCode = process.waitFor(wait + 1, TimeUnit.SECONDS);
+            if (returnCode == Integer.MIN_VALUE) {
+                log.warn("Timeout ({}s) identifying image resolution for {}", wait + 1, presentationFileAbsolutePath);
+                process.destroy(true);
+            }
         } catch (InterruptedException e) {
-            log.error("InterruptedException while identifying image resolution {}", presentationFileAbsolutePath, e);
+            Thread.currentThread().interrupt();
+            log.error("Interrupted while identifying image resolution {}", presentationFileAbsolutePath, e);
         }
 
         return new ImageResolution(imgResHandler.getWidth(), imgResHandler.getHeight());

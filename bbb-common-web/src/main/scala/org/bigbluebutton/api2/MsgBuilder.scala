@@ -8,11 +8,14 @@ import org.bigbluebutton.common2.domain.{ DefaultProps, PageVO, PresentationPage
 import org.bigbluebutton.common2.msgs._
 import org.bigbluebutton.presentation.imp.ImageResolutionService
 import org.bigbluebutton.presentation.messages._
+
 import java.net.URL
 import scala.jdk.CollectionConverters._
-import scala.util.Try
+import scala.util.{ Try, Using }
 
 object MsgBuilder {
+  private lazy val imageResolutionService: ImageResolutionService = new ImageResolutionService
+
   def buildDestroyMeetingSysCmdMsg(msg: DestroyMeetingMessage): BbbCommonEnvCoreMsg = {
     val routing = collection.immutable.HashMap("sender" -> "bbb-web")
     val envelope = BbbCoreEnvelope(DestroyMeetingSysCmdMsg.NAME, routing)
@@ -95,11 +98,10 @@ object MsgBuilder {
     val urls = Map("thumb" -> thumbUrl, "text" -> txtUrl, "svg" -> svgUrl, "png" -> pngUrl)
 
     // get SVG dimensions
-    var width = 500
-    var height = 500
+    var width = 1440D
+    var height = 1080D
     val pageAbsoluteSvgPath = presParentPath + "/svgs/slide" + page.toString + ".svg"
-    val imgResService = new ImageResolutionService
-    val imageResolution = imgResService.identifyImageResolution(pageAbsoluteSvgPath)
+    val imageResolution = imageResolutionService.identifyImageResolution(pageAbsoluteSvgPath)
     if (imageResolution.getWidth != 0 && imageResolution.getHeight != 0) {
       width = imageResolution.getWidth
       height = imageResolution.getHeight
@@ -108,7 +110,7 @@ object MsgBuilder {
     val content = Try {
       val c = new URL(txtUrl).openConnection()
       c.setConnectTimeout(5000); c.setReadTimeout(5000)
-      scala.io.Source.fromInputStream(c.getInputStream, "UTF-8").mkString
+      Using(scala.io.Source.fromInputStream(c.getInputStream, "UTF-8"))(_.mkString).get
     }.getOrElse("")
 
     PresentationPageConvertedVO(
