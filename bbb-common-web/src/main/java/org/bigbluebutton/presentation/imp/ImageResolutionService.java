@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 public class ImageResolutionService {
     private static Logger log = LoggerFactory.getLogger(ImageResolutionService.class);
 
-    private int wait = 5;
+    private int wait = 20;
 
     public ImageResolution identifyImageResolution(File presentationFile) {
         return identifyImageResolution(presentationFile.getAbsolutePath());
