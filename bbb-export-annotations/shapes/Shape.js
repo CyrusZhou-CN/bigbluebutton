@@ -1,6 +1,7 @@
 import {Pattern, Line, Defs, Rect, G, Text, Tspan} from '@svgdotjs/svg.js';
 import {radToDegree} from '../shapes/helpers.js';
 import opentype from 'opentype.js';
+import wawoff2 from 'wawoff2';
 import fs from 'fs';
 /**
  * Represents a basic Tldraw shape on the whiteboard.
@@ -270,13 +271,13 @@ export class Shape {
   */
   static determineFontSize(size) {
     const fontSizes = {
-      's': 24,
-      'm': 34,
-      'l': 52,
-      'xl': 62,
+      's': 18,
+      'm': 24,
+      'l': 36,
+      'xl': 44,
     };
 
-    return fontSizes[size] || 16;
+    return fontSizes[size] || 18;
   }
 
   /**
@@ -317,7 +318,7 @@ export class Shape {
   /**
    * Determines the font to use based on the specified font family.
    * Supported families are 'draw', 'sans', 'serif', and 'mono'. Any other input
-   * defaults to the Caveat Brush font.
+   * defaults to the Shantell Sans font.
    *
    * @param {string} family The name of the font family.
    * @return {string} The font that corresponds to the given family.
@@ -325,11 +326,11 @@ export class Shape {
  */
   static determineFontFromFamily(family) {
     switch (family) {
-      case 'sans': return 'Source Sans Pro';
-      case 'serif': return 'Crimson Pro';
-      case 'mono': return 'Source Code Pro';
+      case 'sans': return 'IBM Plex Sans Medm';
+      case 'serif': return 'IBM Plex Serif Medm';
+      case 'mono': return 'IBM Plex Mono Medm';
       case 'draw':
-      default: return 'Caveat Brush';
+      default: return 'Shantell Sans Informal';
     }
   }
 
@@ -358,9 +359,9 @@ export class Shape {
    * Wraps text to fit within a specified width and height.
    * @param {string} text - The text to wrap.
    * @param {number} width - The width of the bounding box.
-   * @return {string[]} An array of strings, each being a line.
+   * @return {Promise<string[]>} An array of strings, each being a line.
   */
-  wrapText(text, width) {
+  async wrapText(text, width) {
     const config = JSON.parse(
         fs.readFileSync(
             './config/settings.json',
@@ -380,8 +381,14 @@ export class Shape {
         fontBuffer.byteOffset,
         fontBuffer.byteOffset + fontBuffer.byteLength);
 
+    const decompressedBuffer = await wawoff2.decompress(arrayBuffer);
+
+    const decompresseArrayBuffer = decompressedBuffer.buffer.slice(
+        decompressedBuffer.byteOffset,
+        decompressedBuffer.byteOffset + decompressedBuffer.byteLength);
+
     // Parse the font using the ArrayBuffer
-    const parsedFont = opentype.parse(arrayBuffer);
+    const parsedFont = opentype.parse(decompresseArrayBuffer);
     const fontSize = Shape.determineFontSize(this.size);
 
     const _wrapText = (token, availableWidth) => {
@@ -436,7 +443,7 @@ export class Shape {
    * Draws label text on the SVG canvas.
    * @param {SVGG} group The SVG group element to add the label to.
   */
-  drawLabel(group) {
+  async drawLabel(group) {
     // Do nothing if there is no text
     if (!this.text) return;
 
@@ -477,7 +484,7 @@ export class Shape {
           'alignment-baseline': 'baseline',
         });
 
-    const lines = this.wrapText(this.text, width);
+    const lines = await this.wrapText(this.text, width);
 
     lines.forEach((line) => {
       const tspan = new Tspan()
@@ -506,9 +513,9 @@ export class Shape {
    * Intended to be overridden by subclasses.
    *
    * @method draw
-   * @return {G} An empty SVG group element.
+   * @return {Promise<G>} An empty SVG group element.
    */
-  draw() {
+  async draw() {
     return new G();
   }
 }
