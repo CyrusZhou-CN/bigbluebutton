@@ -207,13 +207,13 @@ class Webcam extends Page {
     const webcamLocator = await this.getLocator(e.currentUserLocalStreamVideo);
     await expect(webcamLocator).toHaveScreenshot('resize-webcam.png');
 
-    await this.getLocator(e.minimizePresentation).click();
+    await this.waitAndClick(e.minimizePresentation)
     await this.waitForSelector(e.restorePresentation);
 
     const { height: fullMainContentHeight } = await this.getLocator(e.currentUserLocalStreamVideo).boundingBox();
     expect(fullMainContentHeight).toBeGreaterThan(resizedVideoHeight);
 
-    await this.getLocator(e.restorePresentation).click();
+    await this.waitAndClick(e.restorePresentation)
     await this.waitForSelector(e.minimizePresentation);
 
     const { height: resizedHeightAfterRestore } = await this.getLocator(e.currentUserLocalStreamVideo).boundingBox();
