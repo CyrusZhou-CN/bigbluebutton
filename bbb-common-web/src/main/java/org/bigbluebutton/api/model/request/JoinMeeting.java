@@ -5,9 +5,8 @@ import org.bigbluebutton.api.model.shared.Checksum;
 import org.bigbluebutton.api.model.shared.JoinPassword;
 import org.bigbluebutton.api.model.shared.Password;
 
-import javax.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import org.sitemesh.webapp.contentfilter.HttpServletRequestFilterable;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Map;
 
@@ -61,7 +60,7 @@ public class JoinMeeting extends RequestWithChecksum<JoinMeeting.Params> {
     @Valid
     private Password joinPassword;
 
-    public JoinMeeting(Checksum checksum, HttpServletRequestFilterable servletRequest) {
+    public JoinMeeting(Checksum checksum, HttpServletRequest servletRequest) {
         super(checksum, servletRequest);
         joinPassword = new JoinPassword();
     }

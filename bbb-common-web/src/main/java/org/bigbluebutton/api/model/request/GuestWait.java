@@ -6,9 +6,7 @@ import org.bigbluebutton.api.model.constraint.MeetingExistsConstraint;
 import org.bigbluebutton.api.model.constraint.UserSessionConstraint;
 import org.bigbluebutton.api.service.SessionService;
 
-import javax.servlet.http.HttpServletRequest;
-import jakarta.validation.constraints.NotNull;
-import org.sitemesh.webapp.contentfilter.HttpServletRequestFilterable;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Map;
 
@@ -34,7 +32,7 @@ public class GuestWait extends RequestWithSession<GuestWait.Params>{
 
     private SessionService sessionService;
 
-    public GuestWait(HttpServletRequestFilterable servletRequest) {
+    public GuestWait(HttpServletRequest servletRequest) {
         super(servletRequest);
         sessionService = new SessionService();
     }

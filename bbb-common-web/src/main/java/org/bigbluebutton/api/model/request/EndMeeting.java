@@ -5,12 +5,10 @@ import org.bigbluebutton.api.model.shared.Checksum;
 import org.bigbluebutton.api.model.shared.ModeratorPassword;
 import org.bigbluebutton.api.model.shared.Password;
 
-import javax.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import org.sitemesh.webapp.contentfilter.HttpServletRequestFilterable;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Map;
-import java.util.Set;
 
 @ContentTypeConstraint
 public class EndMeeting extends RequestWithChecksum<EndMeeting.Params> {
@@ -36,7 +34,7 @@ public class EndMeeting extends RequestWithChecksum<EndMeeting.Params> {
     @Valid
     private Password moderatorPassword;
 
-    public EndMeeting(Checksum checksum, HttpServletRequestFilterable servletRequest) {
+    public EndMeeting(Checksum checksum, HttpServletRequest servletRequest) {
         super(checksum, servletRequest);
         moderatorPassword = new ModeratorPassword();
     }

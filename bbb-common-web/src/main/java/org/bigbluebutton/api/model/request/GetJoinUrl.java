@@ -1,9 +1,8 @@
 package org.bigbluebutton.api.model.request;
 
 import org.bigbluebutton.api.model.constraint.UserSessionConstraint;
-import org.sitemesh.webapp.contentfilter.HttpServletRequestFilterable;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 public class GetJoinUrl extends RequestWithSession<GetJoinUrl.Params> {
@@ -21,7 +20,7 @@ public class GetJoinUrl extends RequestWithSession<GetJoinUrl.Params> {
     @UserSessionConstraint
     private String sessionToken;
 
-    public GetJoinUrl(HttpServletRequestFilterable servletRequest) {
+    public GetJoinUrl(HttpServletRequest servletRequest) {
         super(servletRequest);
     }
 

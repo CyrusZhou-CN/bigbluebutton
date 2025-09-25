@@ -2,9 +2,7 @@ package org.bigbluebutton.api.model.request;
 
 import org.bigbluebutton.api.model.constraint.*;
 import org.bigbluebutton.api.service.SessionService;
-import org.sitemesh.webapp.contentfilter.HttpServletRequestFilterable;
-
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @ContentTypeConstraint
@@ -29,7 +27,7 @@ public class Stuns extends RequestWithSession<Stuns.Params> {
 
     private SessionService sessionService;
 
-    public Stuns(HttpServletRequestFilterable servletRequest) {
+    public Stuns(HttpServletRequest servletRequest) {
         super(servletRequest);
         sessionService = new SessionService();
     }

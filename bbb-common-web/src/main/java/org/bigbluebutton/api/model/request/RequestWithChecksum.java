@@ -4,7 +4,7 @@ import jakarta.ws.rs.core.MediaType;
 import org.bigbluebutton.api.model.shared.Checksum;
 
 import jakarta.validation.Valid;
-import org.sitemesh.webapp.contentfilter.HttpServletRequestFilterable;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Map;
 import java.util.Set;
@@ -14,9 +14,9 @@ public abstract class RequestWithChecksum<P extends Enum<P> & RequestParameters>
     @Valid
     protected Checksum checksum;
 
-    protected HttpServletRequestFilterable servletRequest;
+    protected HttpServletRequest servletRequest;
 
-    protected RequestWithChecksum(Checksum checksum, HttpServletRequestFilterable servletRequest) {
+    protected RequestWithChecksum(Checksum checksum, HttpServletRequest servletRequest) {
         this.checksum = checksum;
         this.servletRequest = servletRequest;
     }
@@ -41,7 +41,7 @@ public abstract class RequestWithChecksum<P extends Enum<P> & RequestParameters>
     }
 
     @Override
-    public HttpServletRequestFilterable getServletRequest() {
+    public HttpServletRequest getServletRequest() {
         return servletRequest;
     }
 }

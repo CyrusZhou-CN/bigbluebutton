@@ -2,9 +2,7 @@ package org.bigbluebutton.api.model.request;
 
 import org.bigbluebutton.api.model.constraint.ContentTypeConstraint;
 import org.bigbluebutton.api.model.shared.Checksum;
-import org.sitemesh.webapp.contentfilter.HttpServletRequestFilterable;
-
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @ContentTypeConstraint
@@ -20,7 +18,7 @@ public class SimpleRequest extends RequestWithChecksum<SimpleRequest.Params> {
         public String getValue() { return value; }
     }
 
-    public SimpleRequest(Checksum checksum, HttpServletRequestFilterable servletRequest) {
+    public SimpleRequest(Checksum checksum, HttpServletRequest servletRequest) {
         super(checksum, servletRequest);
     }
 
