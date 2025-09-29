@@ -53,7 +53,7 @@ export class TextShape extends Shape {
         .fill(this.shapeColor);
 
     const lines = await this.wrapText(this.text ?? '', this.w ?? 200);
-    const lineHeight = this.fontSize * 1.3;
+    const lineHeight = this.fontSize * 1.35;
 
     lines.forEach((line, idx) => {
       const tspan = new Tspan()
