@@ -4,7 +4,6 @@ import React, {
 import PropTypes from 'prop-types';
 import { notify } from '/imports/ui/services/notification';
 import Presentation from '/imports/ui/components/presentation/component';
-import Auth from '/imports/ui/services/auth';
 import getFromUserSettings from '/imports/ui/services/users-settings';
 import {
   useMutation, useLazyQuery, useSubscription, useQuery,
@@ -167,7 +166,6 @@ const PresentationContainer = (props) => {
   const multiUserData = {
     active: whiteboardWriters?.filter((u) => !u.user.presenter).length > 0,
     size: whiteboardWriters?.length || 0,
-    hasAccess: whiteboardWriters?.some((writer) => writer.userId === Auth.userID),
   };
 
   const currentSlide = currentPresentationPage ? {
@@ -274,7 +272,7 @@ const PresentationContainer = (props) => {
           isIphone,
           currentSlide,
           slidePosition,
-          hasWBAccess: multiUserData.hasAccess,
+          hasWBAccess: currentUser?.hasDrawPermissionOnCurrentPage,
           downloadPresentationUri: `${APP_CONFIG.bbbWebBase}/${currentPresentationPage?.downloadFileUri}`,
           multiUser: multiUserData.active && presentationIsOpen,
           presentationIsDownloadable: currentPresentationPage?.downloadable,

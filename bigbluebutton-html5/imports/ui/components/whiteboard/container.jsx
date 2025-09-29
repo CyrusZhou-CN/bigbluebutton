@@ -123,9 +123,11 @@ const WhiteboardContainer = (props) => {
     presenter: user.presenter,
     isModerator: user.isModerator,
     userId: user.userId,
+    hasDrawPermissionOnCurrentPage: user.hasDrawPermissionOnCurrentPage,
   }));
   const isPresenter = currentUser?.presenter;
   const isModerator = currentUser?.isModerator;
+  const hasWBAccess = currentUser?.hasDrawPermissionOnCurrentPage;
 
   const presenterChanged = usePrevious(isPresenter) !== isPresenter;
 
@@ -172,7 +174,6 @@ const WhiteboardContainer = (props) => {
   );
 
   const whiteboardWriters = whiteboardWritersData?.pres_page_writers || [];
-  const hasWBAccess = whiteboardWriters?.some((writer) => writer.userId === Auth.userID);
   const wBAccessChanged = usePrevious(hasWBAccess) !== hasWBAccess;
 
   const [presentationSetZoom] = useMutation(PRESENTATION_SET_ZOOM);
