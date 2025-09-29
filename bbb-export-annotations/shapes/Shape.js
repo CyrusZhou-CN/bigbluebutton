@@ -393,6 +393,12 @@ export class Shape {
     const parsedFont = opentype.parse(decompresseArrayBuffer);
     const fontSize = Shape.determineFontSize(this.size);
 
+    // In order to avoid bad line breaks due to rendering mismatch between
+    // environments (browser and CairoSVG) we add some spacing for safety.
+    // Such spacing needs to be less than 2 characters width wide
+    // to not mess up original line breaks.
+    width += fontSize * 1.35;
+
     const _wrapText = (token, availableWidth) => {
       let prefix = '';
       let suffix = token;
