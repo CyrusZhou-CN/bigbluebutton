@@ -1,5 +1,6 @@
 import {Rect} from '@svgdotjs/svg.js';
 import {Geo} from './Geo.js';
+import {Shape} from './Shape.js';
 
 /**
  * Creates an SVG rectangle shape from Tldraw v2 JSON data.
@@ -8,6 +9,17 @@ import {Geo} from './Geo.js';
  * @extends {Geo}
  */
 export class Rectangle extends Geo {
+  /**
+   * Constructs a new Rectangle instance with the given parameters.
+   * Inherits from Shape and initializes padding.
+   *
+   * @param {Object} params - The configuration object for the rectangle shape.
+   */
+  constructor(params) {
+    super(params);
+    this.padding = this.padding || Shape.determineFontSize(this.size)/4;
+  }
+
   /**
    * Draws a rectangle shape based on the instance properties.
    *

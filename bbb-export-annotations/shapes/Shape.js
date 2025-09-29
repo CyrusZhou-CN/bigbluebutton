@@ -303,15 +303,16 @@ export class Shape {
    *
    * @param {string} align - One of ('start', 'middle', 'end').
    * @param {number} height - The height of the container.
+   * @param {number} padding - The padding of the container.
    * @return {string} The calculated vertical position as a string with
    * two decimal places. Coordinates are relative to the container.
    * @static
   */
-  static alignVertically(align, height) {
+  static alignVertically(align, height, padding) {
     switch (align) {
       case 'middle': return (height / 2).toFixed(2);
       case 'end': return height.toFixed(2);
-      default: return '0';
+      default: return padding ?? '0';
     }
   }
 
@@ -469,7 +470,7 @@ export class Shape {
     const height = this.h + this.growY;
 
     const x = Shape.alignHorizontally(this.align, width, this.padding);
-    let y = Shape.alignVertically(this.verticalAlign, height);
+    let y = Shape.alignVertically(this.verticalAlign, height, this.padding);
     const lineHeight = Shape.determineFontSize(this.size);
     const fontFamily = Shape.determineFontFromFamily(this.props?.font);
 
