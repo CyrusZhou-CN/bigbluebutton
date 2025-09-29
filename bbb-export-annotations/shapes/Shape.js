@@ -409,6 +409,10 @@ export class Shape {
     };
 
     for (const textLine of textLines) {
+      if (!textLine) {
+        lines.push('');
+        continue;
+      }
       const textLineTokens = textLine.split(/\b/);
       let textAccum = '';
       for (const token of textLineTokens) {
