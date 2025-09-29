@@ -304,14 +304,15 @@ export class Shape {
    * @param {string} align - One of ('start', 'middle', 'end').
    * @param {number} height - The height of the container.
    * @param {number} padding - The padding of the container.
+   * @param {number} lineHeight - Line height of the text.
    * @return {string} The calculated vertical position as a string with
    * two decimal places. Coordinates are relative to the container.
    * @static
   */
-  static alignVertically(align, height, padding) {
+  static alignVertically(align, height, padding, lineHeight) {
     switch (align) {
-      case 'middle': return (height / 2).toFixed(2);
-      case 'end': return height.toFixed(2);
+      case 'middle': return (height / 2 - lineHeight / 2).toFixed(2);
+      case 'end': return (height - lineHeight - (padding ?? 0)).toFixed(2);
       default: return padding ?? '0';
     }
   }
@@ -469,14 +470,12 @@ export class Shape {
     const width = this.w;
     const height = this.h + this.growY;
 
-    const x = Shape.alignHorizontally(this.align, width, this.padding);
-    let y = Shape.alignVertically(this.verticalAlign, height, this.padding);
     const lineHeight = Shape.determineFontSize(this.size);
     const fontFamily = Shape.determineFontFromFamily(this.props?.font);
-
-    if (this.verticalAlign === 'end' || this.verticalAlign === 'middle') {
-      y -= (lineHeight / 2);
-    }
+    const x = Shape.alignHorizontally(this.align, width, this.padding);
+    const y = Shape.alignVertically(
+        this.verticalAlign, height, this.padding, lineHeight,
+    );
 
     // Create a new SVG text element
     // Text is escaped by SVG.js
