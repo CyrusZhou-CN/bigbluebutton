@@ -31,21 +31,19 @@ test.describe('Options', { tag: '@ci' }, () => {
     await options.fontSizeTest();
   });
 
+  test('Auto hide whiteboard toolbar', async () => {
+    await options.autoHideWhiteboardToolbar();
+  });
 
   test.describe('Data savings', () => {
     test('Webcam sharing settings', async () => {
       await options.initUserPage(true, options.modPage.context)
       await options.enableOtherParticipantsWebcams();
-    })
+    });
 
     test('Desktop sharing settings', async () => {
       await options.initUserPage(true, options.modPage.context)
       await options.enableOtherParticipantsDesktopSharing();
-    })
-  })
-
-  test('Auto hide whiteboard toolbar', async () => {
-    await options.autoHideWhiteboardToolbar();
+    });
   });
-
-});
+})
