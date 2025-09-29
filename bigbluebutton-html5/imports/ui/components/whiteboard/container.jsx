@@ -173,7 +173,7 @@ const WhiteboardContainer = (props) => {
     },
   );
 
-  const whiteboardWriters = whiteboardWritersData?.pres_page_writers || [];
+  const whiteboardWriters = whiteboardWritersData?.user || [];
   const wBAccessChanged = usePrevious(hasWBAccess) !== hasWBAccess;
 
   const [presentationSetZoom] = useMutation(PRESENTATION_SET_ZOOM);
@@ -280,7 +280,7 @@ const WhiteboardContainer = (props) => {
     publishCursorUpdate,
   ), [publishCursorUpdate]);
 
-  const isMultiUserActive = whiteboardWriters.filter((u) => !u.user.presenter)?.length > 0;
+  const isMultiUserActive = whiteboardWriters.filter((u) => !u.presenter)?.length > 0;
   const cursorArray = useMergedCursorData();
 
   const connectedStatus = useReactiveVar(connectionStatus.getConnectedStatusVar());

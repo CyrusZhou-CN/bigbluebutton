@@ -55,7 +55,6 @@ const PresentationContainer = (props) => {
     },
   );
 
-  const whiteboardWriters = whiteboardWritersData?.pres_page_writers || [];
   const restoreOnUpdate = getFromUserSettings(
     FORCE_RESTORE_PRESENTATION_ON_NEW_EVENTS,
     window.meetingClientSettings.public.presentation.restoreOnUpdate,
@@ -164,8 +163,8 @@ const PresentationContainer = (props) => {
   const isViewersAnnotationsLocked = meeting ? meeting.lockSettings?.hideViewersAnnotation : true;
 
   const multiUserData = {
-    active: whiteboardWriters?.filter((u) => !u.user.presenter).length > 0,
-    size: whiteboardWriters?.length || 0,
+    active: whiteboardWritersData?.user?.filter((u) => !u.presenter).length > 0,
+    size: whiteboardWritersData?.user?.length || 0,
   };
 
   const currentSlide = currentPresentationPage ? {

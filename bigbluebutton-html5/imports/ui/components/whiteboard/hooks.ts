@@ -55,7 +55,7 @@ export const useMergedCursorData = () => {
 
   useEffect(() => {
     if (cursorUsersSubscriptionData) {
-      const cursorData = cursorUsersSubscriptionData.pres_page_writers.reduce((acc, cursor) => {
+      const cursorData = cursorUsersSubscriptionData.user.reduce((acc, cursor) => {
         acc[cursor.userId] = cursor;
         return acc;
       }, {} as { [key: string]: UsersCurrentPageWritersResponse });

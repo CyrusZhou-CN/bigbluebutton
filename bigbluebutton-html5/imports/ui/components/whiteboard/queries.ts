@@ -20,9 +20,9 @@ export interface UsersCurrentPageWritersResponse {
   };
 }
 
-// Interface for the pres_page_writers subscription
+// Interface for the whiteboard writers subscription
 export interface CurrentPageWritersResponse {
-  pres_page_writers: Array<UsersCurrentPageWritersResponse>;
+  user: Array<UsersCurrentPageWritersResponse>;
 }
 
 export interface CurrentPresentationPagesSubscriptionResponse {
@@ -177,25 +177,29 @@ export const ANNOTATION_HISTORY_STREAM = gql`
 `;
 
 export const CURRENT_PAGE_WRITERS_QUERY = gql`
-  query currentPageWritersQuery($pageId: String!) {
-    pres_page_writers(where: { pageId: { _eq: $pageId } }) {
+  query currentPageWritersSubscription {
+    user(
+      where: { hasDrawPermissionOnCurrentPage: {_eq: true} },
+      order_by: { userId: asc }
+    ) {
       userId
-      pageId
+      name
+      presenter
+      isModerator
     }
   }
 `;
 
 export const CURRENT_PAGE_WRITERS_SUBSCRIPTION = gql`
   subscription currentPageWritersSubscription {
-    pres_page_writers(
-      where: { isCurrentPage: {_eq: true} },
+    user(
+      where: { hasDrawPermissionOnCurrentPage: {_eq: true} },
       order_by: { userId: asc }
     ) {
       userId
-      user {
-        name
-        presenter
-      }
+      name
+      presenter
+      isModerator
     }
   }
 `;
