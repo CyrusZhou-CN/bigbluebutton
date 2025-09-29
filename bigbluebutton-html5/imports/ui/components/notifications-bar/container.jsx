@@ -146,7 +146,7 @@ const NotificationsBarContainer = () => {
       return <MeetingRemainingTime />;
     }
 
-    if (meeting.componentsFlags?.showRemainingTime) {
+    if (meeting?.componentsFlags?.showRemainingTime) {
       return <MeetingRemainingTime />;
     }
 
