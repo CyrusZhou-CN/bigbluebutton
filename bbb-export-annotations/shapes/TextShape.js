@@ -59,7 +59,7 @@ export class TextShape extends Shape {
           .text(line)
           .attr({
             x,
-            dy: idx === 0 ? 0 : this.fontSize,
+            dy: idx === 0 ? this.fontSize/2 : this.fontSize,
           });
 
       textElement.add(tspan);
