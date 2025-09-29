@@ -248,6 +248,7 @@ const PresentationContainer = (props) => {
     presenter: user.presenter,
     userId: user.userId,
     isModerator: user.isModerator,
+    hasDrawPermissionOnCurrentPage: user.hasDrawPermissionOnCurrentPage,
   }));
   const userIsPresenter = currentUser?.presenter;
 
