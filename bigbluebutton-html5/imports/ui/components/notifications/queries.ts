@@ -16,14 +16,10 @@ export interface NotificationResponse {
 }
 
 export const getNotificationsStream = gql`
-  subscription getNotificationStream(
-    $initialCursor: timestamptz!,
-    $excludedMessageIds: [String!]!
-  ){
+  subscription getNotificationStream($initialCursor: timestamptz!) {
     notification_stream(
       batch_size: 10,
-      cursor: {initial_value: {createdAt: $initialCursor}},
-      where: {messageId: {_nin: $excludedMessageIds}}
+      cursor: {initial_value: {createdAt: $initialCursor}}
     ) {
       notificationType
       icon
