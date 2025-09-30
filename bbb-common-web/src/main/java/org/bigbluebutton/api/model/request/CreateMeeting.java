@@ -4,7 +4,7 @@ import jakarta.ws.rs.core.MediaType;
 import org.bigbluebutton.api.model.constraint.*;
 import org.bigbluebutton.api.model.shared.Checksum;
 
-import org.sitemesh.webapp.contentfilter.HttpServletRequestFilterable;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Map;
 import java.util.Set;
@@ -54,7 +54,7 @@ public class CreateMeeting extends RequestWithChecksum<CreateMeeting.Params> {
     private String recordString;
     private Boolean record;
 
-    public CreateMeeting(Checksum checksum, HttpServletRequestFilterable servletRequest) {
+    public CreateMeeting(Checksum checksum, HttpServletRequest servletRequest) {
         super(checksum, servletRequest);
     }
 

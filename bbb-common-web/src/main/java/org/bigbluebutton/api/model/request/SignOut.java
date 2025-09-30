@@ -1,11 +1,7 @@
 package org.bigbluebutton.api.model.request;
 
 import org.bigbluebutton.api.model.constraint.UserSessionConstraint;
-
-import javax.servlet.http.HttpServletRequest;
-import jakarta.validation.constraints.NotNull;
-import org.sitemesh.webapp.contentfilter.HttpServletRequestFilterable;
-
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 public class SignOut extends RequestWithSession<SignOut.Params> {
@@ -23,7 +19,7 @@ public class SignOut extends RequestWithSession<SignOut.Params> {
     @UserSessionConstraint
     private String sessionToken;
 
-    public SignOut(HttpServletRequestFilterable servletRequest) {
+    public SignOut(HttpServletRequest servletRequest) {
         super(servletRequest);
     }
 

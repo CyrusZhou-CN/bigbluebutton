@@ -19,7 +19,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import org.sitemesh.webapp.contentfilter.HttpServletRequestFilterable;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class ValidationService {
 
@@ -71,7 +71,7 @@ public class ValidationService {
         validator = validatorFactory.getValidator();
     }
 
-    public Map<String, String> validate(ApiCall apiCall, HttpServletRequestFilterable servletRequest) {
+    public Map<String, String> validate(ApiCall apiCall, HttpServletRequest servletRequest) {
         String queryString = servletRequest.getQueryString();
         Map<String, String[]> params = servletRequest.getParameterMap();
         log.info("Validating {} request with query string {}", apiCall.getName(), queryString);
@@ -109,7 +109,7 @@ public class ValidationService {
         }
     }
 
-    private Request initializeRequest(ApiCall apiCall, Map<String, String[]> params, String queryString, HttpServletRequestFilterable servletRequest) {
+    private Request initializeRequest(ApiCall apiCall, Map<String, String[]> params, String queryString, HttpServletRequest servletRequest) {
         Request request = null;
         Checksum checksum;
 

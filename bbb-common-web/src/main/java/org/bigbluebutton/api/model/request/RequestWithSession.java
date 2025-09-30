@@ -1,16 +1,15 @@
 package org.bigbluebutton.api.model.request;
 
 import jakarta.ws.rs.core.MediaType;
-import org.sitemesh.webapp.contentfilter.HttpServletRequestFilterable;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Set;
 
 public abstract class RequestWithSession<P extends Enum<P> & RequestParameters> implements Request<P> {
 
-    protected HttpServletRequestFilterable servletRequest;
+    protected HttpServletRequest servletRequest;
 
-    protected RequestWithSession(HttpServletRequestFilterable servletRequest) {
+    protected RequestWithSession(HttpServletRequest servletRequest) {
         this.servletRequest = servletRequest;
     }
 
@@ -20,7 +19,7 @@ public abstract class RequestWithSession<P extends Enum<P> & RequestParameters> 
     }
 
     @Override
-    public HttpServletRequestFilterable getServletRequest() {
+    public HttpServletRequest getServletRequest() {
         return servletRequest;
     }
 }

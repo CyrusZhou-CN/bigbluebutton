@@ -2,9 +2,7 @@ package org.bigbluebutton.api.model.request;
 
 import org.bigbluebutton.api.model.constraint.UserSessionConstraint;
 
-import javax.servlet.http.HttpServletRequest;
-import jakarta.validation.constraints.NotNull;
-import org.sitemesh.webapp.contentfilter.HttpServletRequestFilterable;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Map;
 
@@ -23,7 +21,7 @@ public class LearningDashboard extends RequestWithSession<LearningDashboard.Para
     @UserSessionConstraint
     private String sessionToken;
 
-    public LearningDashboard(HttpServletRequestFilterable servletRequest) {
+    public LearningDashboard(HttpServletRequest servletRequest) {
         super(servletRequest);
     }
 

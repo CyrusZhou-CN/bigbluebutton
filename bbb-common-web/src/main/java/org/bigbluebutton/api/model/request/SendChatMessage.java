@@ -1,13 +1,10 @@
 package org.bigbluebutton.api.model.request;
 
 import org.bigbluebutton.api.model.constraint.MeetingIDConstraint;
-import org.bigbluebutton.api.model.constraint.MeetingNameConstraint;
 import org.bigbluebutton.api.model.constraint.NotNull;
 import org.bigbluebutton.api.model.constraint.Size;
 import org.bigbluebutton.api.model.shared.Checksum;
-import org.sitemesh.webapp.contentfilter.HttpServletRequestFilterable;
-
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 public class SendChatMessage extends RequestWithChecksum<SendChatMessage.Params> {
@@ -33,7 +30,7 @@ public class SendChatMessage extends RequestWithChecksum<SendChatMessage.Params>
     @Size(min = 1, max = 500, message = "Param message must be between 1 and 500 characters")
     private String message;
 
-    public SendChatMessage(Checksum checksum, HttpServletRequestFilterable servletRequest) {
+    public SendChatMessage(Checksum checksum, HttpServletRequest servletRequest) {
         super(checksum, servletRequest);
     }
 
