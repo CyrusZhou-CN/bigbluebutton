@@ -28,7 +28,7 @@ const PresentationMenuContainer = (props) => {
     ];
   }
 
-  const hasWBAccess = currentUser?.hasDrawPermissionOnCurrentPage;
+  const hasWBAccess = currentUser?.whiteboardWriteAccess;
 
   const meetingInfo = useMeeting((meeting) => ({
     name: meeting?.name,
@@ -64,6 +64,6 @@ export default PresentationMenuContainer;
 PresentationMenuContainer.propTypes = {
   elementId: PropTypes.string.isRequired,
   currentUser: PropTypes.shape({
-    hasDrawPermissionOnCurrentPage: PropTypes.bool,
+    whiteboardWriteAccess: PropTypes.bool,
   }).isRequired,
 };

@@ -163,8 +163,10 @@ const PresentationContainer = (props) => {
   const isViewersAnnotationsLocked = meeting ? meeting.lockSettings?.hideViewersAnnotation : true;
 
   const multiUserData = {
-    active: whiteboardWritersData?.user?.filter((u) => !u.presenter).length > 0,
-    size: whiteboardWritersData?.user?.length || 0,
+    active: whiteboardWritersData?.user_whiteboardWriteAccess?.filter(
+      (u) => !u.presenter,
+    ).length > 0,
+    size: whiteboardWritersData?.user_whiteboardWriteAccess?.length || 0,
   };
 
   const currentSlide = currentPresentationPage ? {
@@ -245,7 +247,7 @@ const PresentationContainer = (props) => {
     presenter: user.presenter,
     userId: user.userId,
     isModerator: user.isModerator,
-    hasDrawPermissionOnCurrentPage: user.hasDrawPermissionOnCurrentPage,
+    whiteboardWriteAccess: user.whiteboardWriteAccess,
   }));
   const userIsPresenter = currentUser?.presenter;
 
@@ -271,7 +273,7 @@ const PresentationContainer = (props) => {
           isIphone,
           currentSlide,
           slidePosition,
-          hasWBAccess: currentUser?.hasDrawPermissionOnCurrentPage,
+          hasWBAccess: currentUser?.whiteboardWriteAccess,
           downloadPresentationUri: `${APP_CONFIG.bbbWebBase}/${currentPresentationPage?.downloadFileUri}`,
           multiUser: multiUserData.active && presentationIsOpen,
           presentationIsDownloadable: currentPresentationPage?.downloadable,
