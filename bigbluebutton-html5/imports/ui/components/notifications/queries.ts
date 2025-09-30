@@ -15,6 +15,7 @@ export interface NotificationResponse {
   notification_stream: Notification[];
 }
 
+// This subscription is handled by bbb-graphql-middleware and its content should not be modified
 export const getNotificationsStream = gql`
   subscription getNotificationStream($initialCursor: timestamptz!) {
     notification_stream(
