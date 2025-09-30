@@ -12,17 +12,25 @@ export interface CursorCoordinatesResponse {
   pres_page_cursor_stream: CursorCoordinates[];
 }
 
-export interface UsersCurrentPageWritersResponse {
+export interface UserWhiteboardWriteAccess {
   userId: string;
-  user: {
-    name: string;
-    presenter: boolean;
-  };
+  name: string;
+  presenter: boolean;
 }
 
 // Interface for the whiteboard writers subscription
 export interface CurrentPageWritersResponse {
-  user: Array<UsersCurrentPageWritersResponse>;
+  user_whiteboardWriteAccess: Array<UserWhiteboardWriteAccess>;
+}
+
+export interface UserWhiteboardCursor {
+  userId: string;
+  name: string;
+  presenter: boolean;
+}
+
+export interface UserWhiteboardCursorResponse {
+  user_whiteboardCursorAccess: Array<UserWhiteboardCursor>;
 }
 
 export interface CurrentPresentationPagesSubscriptionResponse {
@@ -177,9 +185,8 @@ export const ANNOTATION_HISTORY_STREAM = gql`
 `;
 
 export const CURRENT_PAGE_WRITERS_QUERY = gql`
-  query currentPageWritersSubscription {
-    user(
-      where: { hasDrawPermissionOnCurrentPage: {_eq: true} },
+  query whiteboardWriteAccessQuery {
+    user_whiteboardWriteAccess(
       order_by: { userId: asc }
     ) {
       userId
@@ -191,9 +198,21 @@ export const CURRENT_PAGE_WRITERS_QUERY = gql`
 `;
 
 export const CURRENT_PAGE_WRITERS_SUBSCRIPTION = gql`
-  subscription currentPageWritersSubscription {
-    user(
-      where: { hasDrawPermissionOnCurrentPage: {_eq: true} },
+  subscription whiteboardWriteAccessSubscription {
+    user_whiteboardWriteAccess(
+      order_by: { userId: asc }
+    ) {
+      userId
+      name
+      presenter
+      isModerator
+    }
+  }
+`;
+
+export const CURRENT_CURSORS_SUBSCRIPTION = gql`
+  subscription whiteboardCursorAccessSubscription {
+    user_whiteboardCursorAccess(
       order_by: { userId: asc }
     ) {
       userId
