@@ -123,9 +123,11 @@ const WhiteboardContainer = (props) => {
     presenter: user.presenter,
     isModerator: user.isModerator,
     userId: user.userId,
+    whiteboardWriteAccess: user.whiteboardWriteAccess,
   }));
   const isPresenter = currentUser?.presenter;
   const isModerator = currentUser?.isModerator;
+  const hasWBAccess = currentUser?.whiteboardWriteAccess;
 
   const presenterChanged = usePrevious(isPresenter) !== isPresenter;
 
@@ -171,8 +173,7 @@ const WhiteboardContainer = (props) => {
     },
   );
 
-  const whiteboardWriters = whiteboardWritersData?.pres_page_writers || [];
-  const hasWBAccess = whiteboardWriters?.some((writer) => writer.userId === Auth.userID);
+  const whiteboardWriters = whiteboardWritersData?.user_whiteboardWriteAccess || [];
   const wBAccessChanged = usePrevious(hasWBAccess) !== hasWBAccess;
 
   const [presentationSetZoom] = useMutation(PRESENTATION_SET_ZOOM);
@@ -279,7 +280,7 @@ const WhiteboardContainer = (props) => {
     publishCursorUpdate,
   ), [publishCursorUpdate]);
 
-  const isMultiUserActive = whiteboardWriters.filter((u) => !u.user.presenter)?.length > 0;
+  const isMultiUserActive = whiteboardWriters.filter((u) => !u.presenter)?.length > 0;
   const cursorArray = useMergedCursorData();
 
   const connectedStatus = useReactiveVar(connectionStatus.getConnectedStatusVar());
