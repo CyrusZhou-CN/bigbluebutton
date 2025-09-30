@@ -70,6 +70,12 @@ test.describe.parallel('Webcam', { tag: '@ci' }, () => {
     await webcam.resizeWebcamArea();
   })
 
+  test('Drag and drop webcam in different areas', async ({ browser, page }) => {
+    const webcam = new Webcam(browser, page);
+    await webcam.init(true, true);
+    await webcam.dragAndDropWebcamInDifferentAreas();
+  });
+
   test.describe('Webcam background', () => {
     test('Select one of the default backgrounds', async ({ browser, page }, testInfo) => {
       const webcam = new Webcam(browser, page);
