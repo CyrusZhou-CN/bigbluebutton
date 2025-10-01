@@ -247,6 +247,9 @@ RangeLoop:
 					if browserConnection.ActiveStreamings["getCursorCoordinatesStream"] == browserMessage.ID {
 						delete(browserConnection.ActiveStreamings, "getCursorCoordinatesStream")
 					}
+					if browserConnection.ActiveStreamings["getNotificationStream"] == browserMessage.ID {
+						delete(browserConnection.ActiveStreamings, "getNotificationStream")
+					}
 					browserConnection.ActiveStreamingsMutex.Unlock()
 				}
 
