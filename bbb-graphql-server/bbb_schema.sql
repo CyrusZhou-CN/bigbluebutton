@@ -300,7 +300,7 @@ CREATE UNLOGGED TABLE "user" (
 	"captionLocale" varchar(255),
 	"inactivityWarningDisplay" bool default FALSE,
 	"inactivityWarningTimeoutSecs" numeric,
-	"hasDrawPermissionOnCurrentPage" bool default FALSE,
+	"whiteboardWriteAccess" bool default FALSE,
 	"echoTestRunningAt" timestamp with time zone,
 	CONSTRAINT "user_pkey" PRIMARY KEY ("meetingId","userId"),
 	FOREIGN KEY ("meetingId", "guestStatusSetByModerator") REFERENCES "user"("meetingId","userId") ON DELETE SET NULL
@@ -334,8 +334,8 @@ CREATE TRIGGER update_user_raiseHand_away_time_trigger BEFORE UPDATE OF "raiseHa
     FOR EACH ROW EXECUTE FUNCTION update_user_raiseHand_away_time_trigger_func();
 
 
---hasDrawPermissionOnCurrentPage is necessary to improve the performance of the order by of userlist
-COMMENT ON COLUMN "user"."hasDrawPermissionOnCurrentPage" IS 'This column is dynamically populated by triggers of tables: user, pres_presentation, pres_page, pres_page_writers';
+--whiteboardWriteAccess is necessary to improve the performance of the order by of userlist
+COMMENT ON COLUMN "user"."whiteboardWriteAccess" IS 'This column is dynamically populated by triggers of tables: user, pres_presentation, pres_page, pres_page_writers';
 COMMENT ON COLUMN "user"."disconnected" IS 'This column is set true when the user closes the window or his with the server is over';
 COMMENT ON COLUMN "user"."expired" IS 'This column is set true after 10 seconds with disconnected=true';
 COMMENT ON COLUMN "user"."loggedOut" IS 'This column is set to true when the user click the button to Leave meeting';
@@ -427,7 +427,7 @@ AS SELECT "user"."userId",
     "user"."speechLocale",
     "user"."captionLocale",
     CASE WHEN "user"."echoTestRunningAt" > current_timestamp - INTERVAL '3 seconds' THEN TRUE ELSE FALSE END "isRunningEchoTest",
-    "user"."hasDrawPermissionOnCurrentPage",
+    "user"."whiteboardWriteAccess",
     "user"."isModerator",
     "user"."currentlyInMeeting"
   FROM "user"
@@ -439,7 +439,7 @@ CREATE INDEX "idx_v_user_meetingId_orderByColumns" ON "user"(
     "role" ASC NULLS LAST,
     "raiseHandTime" ASC NULLS LAST,
     "isDialIn" DESC NULLS FIRST,
-    "hasDrawPermissionOnCurrentPage" DESC NULLS FIRST,
+    "whiteboardWriteAccess" DESC NULLS FIRST,
     "nameSortable" ASC NULLS LAST,
     "registeredAt" ASC NULLS LAST,
     "userId" ASC NULLS LAST
@@ -490,7 +490,7 @@ AS SELECT "user"."userId",
     CASE WHEN "user"."role" = 'MODERATOR' THEN false ELSE "user"."locked" END "locked",
     "user"."speechLocale",
     "user"."captionLocale",
-    "user"."hasDrawPermissionOnCurrentPage",
+    "user"."whiteboardWriteAccess",
     "user"."echoTestRunningAt",
     CASE WHEN "user"."echoTestRunningAt" > current_timestamp - INTERVAL '3 seconds' THEN TRUE ELSE FALSE END "isRunningEchoTest",
     "user"."isModerator",
@@ -515,6 +515,11 @@ JOIN "meeting_usersPolicies" mup using("meetingId")
 where u."guestStatus" = 'WAIT'
 and u."loggedOut" is false
 and u."ejected" is not true;
+
+create index "idx_v_user_guest" on "user"("meetingId", "userId", "isWaiting")
+where "guestStatus" = 'WAIT'
+and "loggedOut" is false
+and "ejected" is not true;
 
 --v_user_ref will be used only as foreign key (not possible to fetch this table directly through graphql)
 --it is necessary because v_user has some conditions like "lockSettings-hideUserList"
@@ -554,7 +559,7 @@ AS SELECT
     CASE WHEN "user"."role" = 'MODERATOR' THEN false ELSE "user"."locked" END "locked",
     "user"."speechLocale",
     "user"."captionLocale",
-    "user"."hasDrawPermissionOnCurrentPage",
+    "user"."whiteboardWriteAccess",
     "user"."isModerator",
     "user"."currentlyInMeeting"
    FROM "user";
@@ -1039,6 +1044,23 @@ select "meetingId", "learningDashboardAccessToken"
 from "v_meeting";
 
 
+CREATE OR REPLACE VIEW "v_user_whiteboardWriteAccess" AS
+select "meetingId", "userId", "name", "presenter", "isModerator"
+FROM "user"
+WHERE "user"."currentlyInMeeting" is true
+AND "user"."whiteboardWriteAccess" is true;
+
+CREATE OR REPLACE VIEW "v_user_whiteboardCursorAccess" AS
+select "meetingId", "userId", "name", "presenter", "isModerator"
+FROM "user"
+WHERE "user"."currentlyInMeeting" is true
+AND "user"."whiteboardWriteAccess" is true;
+
+CREATE INDEX "idx_user_whiteboardWriteAccess" ON "user"("meetingId", "userId") INCLUDE ("meetingId", "userId", "name", "presenter", "isModerator")
+WHERE "user"."currentlyInMeeting" is true
+AND "user"."whiteboardWriteAccess" is true;
+
+
 -- ===================== CHAT TABLES
 
 
@@ -1257,7 +1279,8 @@ LEFT JOIN "chat_user" chat_with ON chat_with."meetingId" = chat."meetingId" AND
                                     chat_with."chatId" != 'MAIN-PUBLIC-GROUP-CHAT'
 WHERE cu."visible" is true;
 
-create index idx_v_chat_with on chat_user("meetingId","chatId","userId") where "chatId" != 'MAIN-PUBLIC-GROUP-CHAT';
+CREATE INDEX "idx_v_chat_with" on chat_user("meetingId","chatId","userId") WHERE "chatId" != 'MAIN-PUBLIC-GROUP-CHAT';
+CREATE INDEX "idx_v_chat_message_unread" ON "chat_message"("meetingId","chatId","createdAt" asc);
 
 CREATE OR REPLACE VIEW "v_chat_message_public" AS
 SELECT cm.*
@@ -1290,6 +1313,9 @@ LEFT JOIN "chat_user" chat_with ON chat_with."meetingId" = cm."meetingId"
                                 AND chat_with."chatId" = cm."chatId"
                                 AND chat_with."userId" != cu."userId"
 WHERE cm."chatId" != 'MAIN-PUBLIC-GROUP-CHAT';
+
+CREATE INDEX "idx_v_chat_message_private" ON chat_message ("meetingId", "chatId", "createdAt")
+WHERE "chatId" != 'MAIN-PUBLIC-GROUP-CHAT';
 
 CREATE UNLOGGED TABLE "chat_message_reaction" (
 	"meetingId" varchar(100),
@@ -1564,9 +1590,9 @@ WHERE "uploadInProgress" IS FALSE
 AND "uploadCompleted" IS FALSE;
 
 ------------------------------------------------------------
--- Triggers to automatically control "user" flag "hasDrawPermissionOnCurrentPage"
+-- Triggers to automatically control "user" flag "whiteboardWriteAccess"
 
-CREATE OR REPLACE FUNCTION "update_user_hasDrawPermissionOnCurrentPage"("p_userId" varchar DEFAULT NULL, "p_meetingId" varchar DEFAULT NULL)
+CREATE OR REPLACE FUNCTION "update_user_whiteboardWriteAccess"("p_userId" varchar DEFAULT NULL, "p_meetingId" varchar DEFAULT NULL)
 RETURNS VOID AS $$
 DECLARE
     where_clause TEXT := '';
@@ -1581,7 +1607,7 @@ BEGIN
     IF where_clause <> '' THEN
         where_clause := substring(where_clause from 6);
         EXECUTE format('UPDATE "user"
-						SET "hasDrawPermissionOnCurrentPage" =
+						SET "whiteboardWriteAccess" =
 						CASE WHEN presenter THEN TRUE
 						WHEN EXISTS (
 							SELECT 1 FROM "v_pres_page_writers" v
@@ -1601,7 +1627,7 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION update_user_presenter_trigger_func() RETURNS TRIGGER AS $$
 BEGIN
     IF OLD."presenter" <> NEW."presenter" THEN
-        PERFORM "update_user_hasDrawPermissionOnCurrentPage"(NEW."userId", NEW."meetingId");
+        PERFORM "update_user_whiteboardWriteAccess"(NEW."userId", NEW."meetingId");
     END IF;
     RETURN NEW;
 END;
@@ -1614,7 +1640,7 @@ FOR EACH ROW EXECUTE FUNCTION update_user_presenter_trigger_func();
 CREATE OR REPLACE FUNCTION update_pres_presentation_current_trigger_func() RETURNS TRIGGER AS $$
 BEGIN
     IF OLD."current" <> NEW."current" THEN
-    	PERFORM "update_user_hasDrawPermissionOnCurrentPage"(NULL, NEW."meetingId");
+    	PERFORM "update_user_whiteboardWriteAccess"(NULL, NEW."meetingId");
     END IF;
     RETURN NEW;
 END;
@@ -1628,7 +1654,7 @@ CREATE OR REPLACE FUNCTION update_pres_page_current_trigger_func()
 RETURNS TRIGGER AS $$
 BEGIN
     IF OLD."current" <> NEW."current" THEN
-    	PERFORM "update_user_hasDrawPermissionOnCurrentPage"(NULL, pres_presentation."meetingId")
+    	PERFORM "update_user_whiteboardWriteAccess"(NULL, pres_presentation."meetingId")
         FROM pres_presentation
         WHERE "presentationId" = NEW."presentationId";
     END IF;
@@ -1644,9 +1670,9 @@ CREATE OR REPLACE FUNCTION ins_upd_del_pres_page_writers_trigger_func()
 RETURNS TRIGGER AS $$
 BEGIN
     IF TG_OP = 'UPDATE' or TG_OP = 'INSERT' THEN
-        PERFORM "update_user_hasDrawPermissionOnCurrentPage"(NEW."userId", NEW."meetingId");
+        PERFORM "update_user_whiteboardWriteAccess"(NEW."userId", NEW."meetingId");
     ELSIF TG_OP = 'DELETE' THEN
-        PERFORM "update_user_hasDrawPermissionOnCurrentPage"(OLD."userId", OLD."meetingId");
+        PERFORM "update_user_whiteboardWriteAccess"(OLD."userId", OLD."meetingId");
     END IF;
     RETURN NEW;
 END;
