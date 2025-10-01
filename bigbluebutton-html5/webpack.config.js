@@ -136,8 +136,6 @@ if (env === prodEnv) {
     minimize: true,
     minimizer: isSafariTarget ? [] : [new TerserPlugin({
       terserOptions: {
-        compress: true,
-        mangle: true,
         keep_classnames: true,
         keep_fnames: true,
       },
