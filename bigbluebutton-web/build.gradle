@@ -11,15 +11,11 @@ buildscript {
     maven { url "https://repo.grails.org/grails/core" }
   }
   dependencies {
-    classpath ("org.apache.grails:grails-gradle-plugins:${grailsVersion}") {
-      exclude group: 'org.grails.plugins', module: 'views-gradle'
-    }
-
-    classpath "com.bertramlabs.plugins:asset-pipeline-gradle:5.0.9"
+    classpath platform("org.apache.grails:grails-gradle-bom:${grailsVersion}")
+    classpath "org.apache.grails:grails-gradle-plugins"
     classpath "com.github.erdi:webdriver-binaries-gradle-plugin:3.2"
-
-    classpath "org.apache.grails:grails-gradle-plugins:${grailsVersion}"
-    classpath "org.apache.grails:grails-views-gson:${grailsVersion}"
+    // Asset Pipeline plugin classpath is optional if you use plugins DSL; keeping here is fine:
+    classpath "com.bertramlabs.plugins:asset-pipeline-gradle:5.0.9"
   }
 }
 
