@@ -240,7 +240,7 @@ const UserActions: React.FC<UserActionsProps> = ({
     try {
       // Fetch the writers data
       const { data } = await getWriters();
-      const currentWriters: Writer[] = data?.user || [];
+      const currentWriters: Writer[] = data?.user_whiteboardWriteAccess || [];
 
       // Determine if the user has access
       const { userId, whiteboardWriteAccess } = user;
