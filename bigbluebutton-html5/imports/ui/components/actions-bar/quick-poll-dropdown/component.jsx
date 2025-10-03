@@ -130,9 +130,6 @@ const QuickPollDropdown = (props) => {
     .map((line) => line.trimStart()).find((line) => line.endsWith(QUICK_POLL_CORRECT_ANSWER_SUFFIX)
   && !question.includes(line))?.slice(0, -QUICK_POLL_CORRECT_ANSWER_SUFFIX.length);
 
-  const normalizedCorrectAnswer = correctAnswer
-    ? correctAnswer.replace(/^[a-zA-Z0-9][.)]\s+/, '').trim()
-    : correctAnswer;
   // Check explicitly if options exist or if the question ends with '?'
   const hasExplicitQuestionMark = basicQuestionPattern.test(question);
 
@@ -184,6 +181,9 @@ const QuickPollDropdown = (props) => {
       return `\r${labelChar}.`;
     });
   }
+  const normalizedCorrectAnswer = correctAnswer && (hasYN || hasTF)
+    ? correctAnswer.replace(/^[a-zA-Z0-9][.)]\s+/, '').trim()
+    : correctAnswer;
 
   const optionGroupsWithLabels = [];
   optionsPoll.reduce((acc, currentValue) => {
