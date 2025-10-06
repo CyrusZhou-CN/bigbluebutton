@@ -2499,7 +2499,7 @@ CREATE OR REPLACE VIEW "v_pluginDataChannelEntry_public" AS
 SELECT "meetingId", "pluginName", "channelName", "subChannelName", "entryId", "payloadJson", "createdBy", "toRoles", "createdAt", "updatedAt"
 FROM "pluginDataChannelEntry"
 WHERE "deletedAt" is null
-AND "isPublic" = true;
+AND "isPublic" is true;
 
 ------------------------
 
