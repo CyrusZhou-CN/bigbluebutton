@@ -2493,7 +2493,7 @@ JOIN "pluginDataChannelEntry" m ON m."meetingId" = u."meetingId"
 				OR (u."presenter" AND 'PRESENTER' = ANY(m."toRoles"))
 				)
 WHERE "deletedAt" is null
-AND "isPublic" = false;
+AND "isPublic" is false;
 
 CREATE OR REPLACE VIEW "v_pluginDataChannelEntry_public" AS
 SELECT "meetingId", "pluginName", "channelName", "subChannelName", "entryId", "payloadJson", "createdBy", "toRoles", "createdAt", "updatedAt"
