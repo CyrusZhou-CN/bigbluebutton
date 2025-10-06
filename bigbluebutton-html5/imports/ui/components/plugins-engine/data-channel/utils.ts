@@ -28,8 +28,8 @@ export const mergeDataChannelEntries = (
   let allPrivateDataChannelEntries = mapProjectedDataChannelEntries(
     receivedPublicDataChannelEntries,
   );
-  const hasPrivateDataChannelEntries = !receivedPrivateDataChannelEntries
-    || (receivedPrivateDataChannelEntries && receivedPrivateDataChannelEntries.length === 0);
+  const hasPrivateDataChannelEntries = receivedPrivateDataChannelEntries
+    && receivedPrivateDataChannelEntries.length !== 0;
   if (hasPrivateDataChannelEntries) {
     allPrivateDataChannelEntries = allPrivateDataChannelEntries.concat(
       mapProjectedDataChannelEntries(receivedPrivateDataChannelEntries),

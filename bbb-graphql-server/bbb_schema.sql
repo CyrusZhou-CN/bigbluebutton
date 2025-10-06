@@ -2481,29 +2481,25 @@ GENERATED ALWAYS AS (
     )
 ) STORED;
 
-create index "idx_pluginDataChannelEntry_pk_reverse" on "pluginDataChannelEntry"("pluginName", "meetingId", "channelName", "subChannelName");
-create index "idx_pluginDataChannelEntry_pk_reverse_b" on "pluginDataChannelEntry"("channelName", "pluginName", "meetingId", "subChannelName");
-create index "idx_pluginDataChannelEntry_pk_reverse_c" on "pluginDataChannelEntry"("subChannelName", "channelName", "pluginName", "meetingId");
-create index "idx_pluginDataChannelEntry_channelName" on "pluginDataChannelEntry"("meetingId", "pluginName", "channelName", "toRoles", "toUserIds", "subChannelName", "createdAt") where "deletedAt" is null;
-create index "idx_pluginDataChannelEntry_roles" on "pluginDataChannelEntry"("meetingId", "toRoles", "toUserIds", "createdAt") where "deletedAt" is null;
-create index "idx_pluginDataChannelEntry_createdAt" ON "pluginDataChannelEntry"("createdAt" DESC) where "deletedAt" is null;
+create index "idx_pluginDataChannelEntry_public" ON "pluginDataChannelEntry"("meetingId", "createdAt" DESC NULLS FIRST) where "deletedAt" is null and "isPublic" is true;
+create index "idx_pluginDataChannelEntry_private" ON "pluginDataChannelEntry"("meetingId", "createdAt" DESC NULLS FIRST) where "deletedAt" is null and "isPublic" is false;
 
 CREATE OR REPLACE VIEW "v_pluginDataChannelEntry_private" AS
 SELECT u."meetingId", u."userId", m."pluginName", m."channelName", m."subChannelName", m."entryId", m."payloadJson", m."createdBy", m."toRoles", m."createdAt", m."updatedAt"
 FROM "user" u
 JOIN "pluginDataChannelEntry" m ON m."meetingId" = u."meetingId"
-			AND ((m."toRoles" IS NULL AND m."toUserIds" IS NULL)
-				OR u."userId" = ANY(m."toUserIds")
+			AND (u."userId" = ANY(m."toUserIds")
 				OR u."role" = ANY(m."toRoles")
 				OR (u."presenter" AND 'PRESENTER' = ANY(m."toRoles"))
 				)
-WHERE "deletedAt" is null AND "isPublic" = false;
+WHERE "deletedAt" is null
+AND "isPublic" = false;
 
 CREATE OR REPLACE VIEW "v_pluginDataChannelEntry_public" AS
-SELECT u."meetingId", m."pluginName", m."channelName", m."subChannelName", m."entryId", m."payloadJson", m."createdBy", m."toRoles", m."createdAt", m."updatedAt"
-FROM "user" u
-JOIN "pluginDataChannelEntry" m ON m."meetingId" = u."meetingId"
-WHERE "deletedAt" is null AND "isPublic" = true;
+SELECT "meetingId", "pluginName", "channelName", "subChannelName", "entryId", "payloadJson", "createdBy", "toRoles", "createdAt", "updatedAt"
+FROM "pluginDataChannelEntry"
+WHERE "deletedAt" is null
+AND "isPublic" = true;
 
 ------------------------
 
