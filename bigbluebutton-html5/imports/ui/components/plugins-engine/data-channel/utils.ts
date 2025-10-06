@@ -16,8 +16,10 @@ export const mapProjectedDataChannelEntries = (
 })) || [];
 
 const dateComparisonDesc = (date1: Date, date2: Date): number => {
-  if (date1 === date2) return 0;
-  if (date1 > date2) return -1;
+  const time1 = date1.getTime();
+  const time2 = date2.getTime();
+  if (time1 === time2) return 0;
+  if (time1 > time2) return -1;
   return 1;
 };
 

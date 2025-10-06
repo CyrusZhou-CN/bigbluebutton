@@ -2476,8 +2476,8 @@ ALTER TABLE "pluginDataChannelEntry"
 ADD COLUMN "isPublic" boolean
 GENERATED ALWAYS AS (
     (
-        ("toUserIds" IS NULL OR array_length("toUserIds", 1) = 0) AND
-        ("toRoles" IS NULL OR array_length("toRoles", 1) = 0)
+        COALESCE(array_length("toUserIds", 1), 0) = 0
+        AND COALESCE(array_length("toRoles", 1), 0) = 0
     )
 ) STORED;
 
@@ -2493,13 +2493,13 @@ JOIN "pluginDataChannelEntry" m ON m."meetingId" = u."meetingId"
 				OR (u."presenter" AND 'PRESENTER' = ANY(m."toRoles"))
 				)
 WHERE "deletedAt" is null
-AND "isPublic" = false;
+AND "isPublic" is false;
 
 CREATE OR REPLACE VIEW "v_pluginDataChannelEntry_public" AS
 SELECT "meetingId", "pluginName", "channelName", "subChannelName", "entryId", "payloadJson", "createdBy", "toRoles", "createdAt", "updatedAt"
 FROM "pluginDataChannelEntry"
 WHERE "deletedAt" is null
-AND "isPublic" = true;
+AND "isPublic" is true;
 
 ------------------------
 

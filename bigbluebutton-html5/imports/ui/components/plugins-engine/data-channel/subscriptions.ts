@@ -31,7 +31,6 @@ export const PLUGIN_DATA_CHANNEL_PUBLIC_SUBSCRIPTION = gql`
       payloadJson,
       createdBy,
       pluginName,
-      toRoles,
     }
   }
 `;
