@@ -201,9 +201,9 @@ class Options extends MultiUsers {
     await openSettings(this.userPage);
     await this.modPage.waitAndClick(e.dataSavingsTab);
     await this.userPage.waitAndClick(e.dataSavingsTab);
-    await this.modPage.hasElementChecked(e.enableWebcamsToggleBtn, 'checked', 'should display the toggle button as ON after opening the data savings tab as default behavior');
+    await this.modPage.hasElementChecked(e.enableWebcamsToggleBtn, 'should display the toggle button as ON after opening the data savings tab as default behavior');
     await this.userPage.waitAndClickElement(e.enableWebcamsToggleBtn);
-    await this.userPage.hasElementNotChecked(e.enableWebcamsToggleBtn, 'unchecked', 'should display the toggle button as OFF after clicking it');
+    await this.userPage.hasElementNotChecked(e.enableWebcamsToggleBtn, 'should display the toggle button as OFF after clicking it');
     await this.modPage.waitAndClick(e.modalConfirmButton);
     await this.userPage.waitAndClick(e.modalConfirmButton);
 
@@ -232,9 +232,9 @@ class Options extends MultiUsers {
     await openSettings(this.userPage);
     await this.modPage.waitAndClick(e.dataSavingsTab);
     await this.userPage.waitAndClick(e.dataSavingsTab);
-    await this.modPage.hasElementChecked(e.enableDesktopSharingToggleBtn, 'checked', 'should display the toggle button as ON, as default behavior');
+    await this.modPage.hasElementChecked(e.enableDesktopSharingToggleBtn, 'should display the toggle button as ON, as default behavior');
     await this.userPage.waitAndClickElement(e.enableDesktopSharingToggleBtn);
-    await this.userPage.hasElementNotChecked(e.enableDesktopSharingToggleBtn, 'unchecked', 'should display the toggle button as OFF, after clicking it');
+    await this.userPage.hasElementNotChecked(e.enableDesktopSharingToggleBtn, 'should display the toggle button as OFF, after clicking it');
     await this.modPage.waitAndClick(e.modalConfirmButton);
     await this.userPage.waitAndClick(e.modalConfirmButton);
 
