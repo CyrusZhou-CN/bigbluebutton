@@ -122,7 +122,7 @@ public class TextFileCreatorImp implements TextFileCreator {
         long execTimeout = this.execTimeout;
         long pageConversionTimeoutInMs = pres.getMaxPageConversionTime() * 1000;
         if (execTimeout > pageConversionTimeoutInMs) {
-        execTimeout = pageConversionTimeoutInMs;
+            execTimeout = pageConversionTimeoutInMs;
         }
 
         boolean done = new ExternalProcessExecutor().exec(COMMAND, execTimeout);
