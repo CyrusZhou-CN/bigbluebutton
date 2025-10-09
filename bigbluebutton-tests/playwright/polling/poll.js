@@ -35,10 +35,19 @@ class Polling extends MultiUsers {
   }
 
   async quickPoll() {
+    const { quickPollConfirmationStep } = getSettings();
     await util.uploadSPresentationForTestingPolls(this.modPage, e.questionSlideFileName);
 
     // The slide needs to be uploaded and converted, so wait a bit longer for this step
     await this.modPage.waitAndClick(e.quickPoll, ELEMENT_WAIT_LONGER_TIME);
+    if(!quickPollConfirmationStep) {
+      await this.modPage.hasElement(e.pollMenuButton, 'should display the poll menu button');
+
+      await this.userPage.hasElement(e.pollingContainer, 'should display the polling container for the attendee to answer it');
+
+      await this.modPage.waitAndClick(e.closePollingBtn);
+      return this.modPage.wasRemoved(e.closePollingBtn, 'should not display the close poll button after the poll closes');
+    }
     await this.modPage.waitAndClick(e.startPoll);
     await this.modPage.hasElement(e.pollMenuButton, 'should display the poll menu button');
 
