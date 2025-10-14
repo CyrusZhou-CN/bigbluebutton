@@ -4,24 +4,12 @@ import org.bigbluebutton.common2.msgs._
 import org.bigbluebutton.core.apps.PermissionCheck
 import org.bigbluebutton.core.bus.MessageBus
 import org.bigbluebutton.core.domain.MeetingState2x
-import org.bigbluebutton.core.models.{ GroupChatMessage, Roles, Users2x }
+import org.bigbluebutton.core.models.{ Roles, Users2x }
 import org.bigbluebutton.core.running.{ HandlerHelpers, LiveMeeting }
 import org.bigbluebutton.core2.MeetingStatus2x
 
 trait EditGroupChatMessageReqMsgHdlr extends HandlerHelpers {
   this: GroupChatHdlrs =>
-
-  private def getIsCustomPluginMessage(chatMessage: GroupChatMessage): Boolean = {
-    (for {
-      pluginNameValue <- chatMessage.metadata.get("pluginName")
-      pluginName = pluginNameValue.toString
-      customValue <- chatMessage.metadata.get("custom")
-      customStr = customValue.toString
-    } yield {
-      val custom = customStr.toBooleanOption.getOrElse(false)
-      pluginName.nonEmpty && custom
-    }).getOrElse(false)
-  }
 
   def handle(msg: EditGroupChatMessageReqMsg, state: MeetingState2x, liveMeeting: LiveMeeting, bus: MessageBus): MeetingState2x = {
     val chatDisabled: Boolean = liveMeeting.props.meetingProp.disabledFeatures.contains("chat")
@@ -64,23 +52,17 @@ trait EditGroupChatMessageReqMsgHdlr extends HandlerHelpers {
           val chatIsPrivate = groupChat.access == GroupChatAccess.PRIVATE
           val userIsAParticipant = groupChat.users.exists(u => u.id == user.intId)
           val userIsOwner = gcMessage.sender.id == user.intId
-          val isCustomPluginMessage = getIsCustomPluginMessage(gcMessage)
-
-          val allowEditing = userIsOwner && !isCustomPluginMessage
 
           if ((chatIsPrivate && userIsAParticipant) || !chatIsPrivate) {
-            if (allowEditing) {
+            if (userIsOwner) {
               val editedGCMessage = gcMessage.copy(message = msg.body.message)
               val updatedGroupChat = GroupChatApp.updateGroupChatMessage(liveMeeting.props.meetingProp.intId, groupChat, state.groupChats, editedGCMessage)
 
               val event = buildGroupChatMessageEditedEvtMsg(liveMeeting.props.meetingProp.intId, msg.body.chatId, msg.header.userId, editedGCMessage)
               bus.outGW.send(event)
               newState = state.update(updatedGroupChat)
-            } else if (!userIsOwner) {
-              val reason = "User doesn't have permission to edit chat message"
-              PermissionCheck.ejectUserForFailedPermission(msg.header.meetingId, msg.header.userId, reason, bus.outGW, liveMeeting)
             } else {
-              val reason = "Custom plugin messages are not editable"
+              val reason = "User doesn't have permission to edit chat message"
               PermissionCheck.ejectUserForFailedPermission(msg.header.meetingId, msg.header.userId, reason, bus.outGW, liveMeeting)
             }
           } else {
