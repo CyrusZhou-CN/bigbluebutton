@@ -1261,7 +1261,7 @@ Since plugins are loaded directly into the client, there is no technical restric
 
 To emphasize: Do not alter the text content of chat messages. Doing so can cause severe reliability and accountability problems.
 
-Instead, the hook provided can do things such as changing the style for emphasizing certain word(s), create a completely different way of rendering the messages for a "notification" message in the chat (One can try to copy the style of the "change presenter" message).
+Instead, the hook provided can be used to modify how messages are presented — for example, by changing the style to emphasize certain word(s), rendering a special layout for "notification" type messages (similar to the "change presenter" message), or even displaying both the original message text and additional custom-rendered UI elements.
 
 ### Localization
 
