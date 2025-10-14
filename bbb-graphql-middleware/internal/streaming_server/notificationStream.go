@@ -3,6 +3,7 @@ package streamingserver
 import (
 	"bytes"
 	"encoding/json"
+	"strings"
 	"sync"
 	"time"
 
@@ -23,11 +24,13 @@ func HandleNotifyAllInMeetingEvtMsg(receivedMessage common.RedisMessage, browser
 
 	for _, bc := range browserConnectionsToSendCursor {
 		bc.ActiveStreamingsMutex.RLock()
-		queryId, existsCursorStream := bc.ActiveStreamings["getNotificationStream"]
+		queryIds, existsCursorStream := bc.ActiveStreamings["getNotificationStream"]
 		bc.ActiveStreamingsMutex.RUnlock()
 		if existsCursorStream {
-			payload := bytes.Replace(jsonDataNext, QueryIdPlaceholderInBytes, []byte(queryId), 1)
-			bc.FromHasuraToBrowserChannel.TrySend(payload)
+			for i := range queryIds {
+				payload := bytes.Replace(jsonDataNext, QueryIdPlaceholderInBytes, []byte(queryIds[i]), 1)
+				bc.FromHasuraToBrowserChannel.TrySend(payload)
+			}
 		}
 	}
 }
@@ -47,11 +50,13 @@ func HandleNotifyUserInMeetingEvtMsg(receivedMessage common.RedisMessage, browse
 
 	for _, bc := range browserConnectionsToSendCursor {
 		bc.ActiveStreamingsMutex.RLock()
-		queryId, existsCursorStream := bc.ActiveStreamings["getNotificationStream"]
+		queryIds, existsCursorStream := bc.ActiveStreamings["getNotificationStream"]
 		bc.ActiveStreamingsMutex.RUnlock()
 		if existsCursorStream {
-			payload := bytes.Replace(jsonDataNext, QueryIdPlaceholderInBytes, []byte(queryId), 1)
-			bc.FromHasuraToBrowserChannel.TrySend(payload)
+			for i := range queryIds {
+				payload := bytes.Replace(jsonDataNext, QueryIdPlaceholderInBytes, []byte(queryIds[i]), 1)
+				bc.FromHasuraToBrowserChannel.TrySend(payload)
+			}
 		}
 	}
 }
@@ -64,9 +69,9 @@ func HandleNotifyRoleInMeetingEvtMsg(receivedMessage common.RedisMessage, browse
 	browserConnectionsMutex.RLock()
 	for _, bc := range browserConnections {
 		if bc.MeetingId == receivedMessage.Core.Header.MeetingId {
-			if role == "moderator" && bc.BBBWebSessionVariables["x-hasura-moderatorinmeeting"] == receivedMessage.Core.Header.MeetingId {
+			if strings.EqualFold(role, "moderator") && bc.BBBWebSessionVariables["x-hasura-moderatorinmeeting"] == receivedMessage.Core.Header.MeetingId {
 				browserConnectionsToSendCursor = append(browserConnectionsToSendCursor, bc)
-			} else if role == "presenter" && bc.BBBWebSessionVariables["x-hasura-presenterinmeeting"] == receivedMessage.Core.Header.MeetingId {
+			} else if strings.EqualFold(role, "presenter") && bc.BBBWebSessionVariables["x-hasura-presenterinmeeting"] == receivedMessage.Core.Header.MeetingId {
 				browserConnectionsToSendCursor = append(browserConnectionsToSendCursor, bc)
 			}
 		}
@@ -75,11 +80,13 @@ func HandleNotifyRoleInMeetingEvtMsg(receivedMessage common.RedisMessage, browse
 
 	for _, bc := range browserConnectionsToSendCursor {
 		bc.ActiveStreamingsMutex.RLock()
-		queryId, existsCursorStream := bc.ActiveStreamings["getNotificationStream"]
+		queryIds, existsCursorStream := bc.ActiveStreamings["getNotificationStream"]
 		bc.ActiveStreamingsMutex.RUnlock()
 		if existsCursorStream {
-			payload := bytes.Replace(jsonDataNext, QueryIdPlaceholderInBytes, []byte(queryId), 1)
-			bc.FromHasuraToBrowserChannel.TrySend(payload)
+			for i := range queryIds {
+				payload := bytes.Replace(jsonDataNext, QueryIdPlaceholderInBytes, []byte(queryIds[i]), 1)
+				bc.FromHasuraToBrowserChannel.TrySend(payload)
+			}
 		}
 	}
 }

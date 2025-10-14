@@ -226,7 +226,7 @@ export const screenshareHasEnded = () => {
   screenShareBridge.stop();
 
   if (window.bbbMobileApp && window.bbbMobileApp.onScreenshareStopRequest) {
-    window.bbbMobileApp.onScreenshareStopRequest()
+    window.bbbMobileApp.onScreenshareStopRequest();
   }
 };
 

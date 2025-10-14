@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { User } from '/imports/ui/Types/user';
 import { LockSettings, UsersPolicies } from '/imports/ui/Types/meeting';
 import { useIntl, defineMessages } from 'react-intl';
@@ -41,6 +41,7 @@ import { PRESENTATION_SET_WRITERS } from '/imports/ui/components/presentation/mu
 import useToggleVoice from '/imports/ui/components/audio/audio-graphql/hooks/useToggleVoice';
 import useWhoIsUnmuted from '/imports/ui/core/hooks/useWhoIsUnmuted';
 import { notify } from '/imports/ui/services/notification';
+import { useModalRegistration } from '/imports/ui/core/singletons/modalController';
 
 interface UserActionsProps {
   userListDropdownItems: PluginSdk.UserListDropdownInterface[];
@@ -220,8 +221,21 @@ const UserActions: React.FC<UserActionsProps> = ({
   setOpenUserAction,
 }) => {
   const intl = useIntl();
-  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const layoutContextDispatch = layoutDispatch();
+
+  const {
+    isOpen: isConfirmationModalOpen,
+    open: openCofirmationModal,
+    close: closeConfirmationModal,
+  } = useModalRegistration({
+    id: 'userActionsConfirmationModal',
+    priority: 'low',
+  });
+
+  const setIsConfirmationModalOpen = (value: boolean) => {
+    if (value) openCofirmationModal();
+    else closeConfirmationModal();
+  };
 
   const [presentationSetWriters] = useMutation(PRESENTATION_SET_WRITERS);
   const [getWriters] = useLazyQuery(
@@ -240,13 +254,11 @@ const UserActions: React.FC<UserActionsProps> = ({
     try {
       // Fetch the writers data
       const { data } = await getWriters();
-      const currentWriters: Writer[] = data?.user || [];
+      const currentWriters: Writer[] = data?.user_whiteboardWriteAccess || [];
 
       // Determine if the user has access
-      const { userId, presPagesWritable } = user;
-      const hasAccess = presPagesWritable.some(
-        (page: { userId: string; isCurrentPage: boolean }) => (page?.userId === userId && page?.isCurrentPage),
-      );
+      const { userId, whiteboardWriteAccess } = user;
+      const hasAccess = whiteboardWriteAccess === true;
 
       // Prepare the updated list of user IDs for whiteboard access
       const usersIds = currentWriters?.map((writer: { userId: string }) => writer?.userId);
@@ -317,9 +329,7 @@ const UserActions: React.FC<UserActionsProps> = ({
     (item: PluginSdk.UserListDropdownInterface) => (user?.userId === item?.userId),
   );
 
-  const hasWhiteboardAccess = user.presPagesWritable?.some(
-    (page: { pageId: string; userId: string }) => (page.pageId === pageId && page.userId === user.userId),
-  );
+  const hasWhiteboardAccess = user?.whiteboardWriteAccess === true;
 
   const [setRole] = useMutation(SET_ROLE);
   const [chatCreateWithUser] = useMutation(CHAT_CREATE_WITH_USER);
