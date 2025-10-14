@@ -254,7 +254,7 @@ class Page {
 
   async wasRemoved(selector, description, timeout = ELEMENT_WAIT_TIME) {
     const locator = this.getLocator(selector);
-    await expect(locator, description).toBeHidden({ timeout });
+    await expect(locator, description).not.toBeVisible({ timeout });
   }
 
   async hasElement(selector, description, timeout = ELEMENT_WAIT_TIME) {
