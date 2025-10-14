@@ -42,7 +42,6 @@ case class ServerCommandConfiguration(
 )
 
 case class ChatServerCommandConfiguration(
-    sendPublicChatMessage: Option[ServerCommandConfiguration],
     sendCustomPublicChatMessage: Option[ServerCommandConfiguration]
 )
 
@@ -337,13 +336,6 @@ object PluginModel {
       serverCommands <- plugin.serverCommand
       chatCommands <- serverCommands.chat
       customCommand <- chatCommands.sendCustomPublicChatMessage
-      roles <- customCommand.allowedRoles
-    } yield roles
-
-    def getPluginPermissionForCommonMessage(plugin: PluginManifestContent): Option[List[String]] = for {
-      serverCommands <- plugin.serverCommand
-      chatCommands <- serverCommands.chat
-      customCommand <- chatCommands.sendPublicChatMessage
       roles <- customCommand.allowedRoles
     } yield roles
   }

@@ -207,11 +207,6 @@ Here is as complete `manifest.json` example with all possible configurations:
   ],
   "serverCommand": {
     "chat": {
-      "sendPublicChatMessage": {
-        "allowedRoles": [
-          "all"
-        ]
-      },
       "sendCustomPublicChatMessage": {
         "allowedRoles": ["presenter", "moderator"] // "moderator","presenter", "all", "viewer"
       }
@@ -1029,7 +1024,7 @@ So the idea is that we have a `uiCommands` object and at a point, there will be 
 `serverCommands` object: It contains all the possible commands available to the developer to interact with the BBB core server, see the ones implemented down below:
 
   - chat:
-    - sendPublicMessage: This function sends a message to the public chat on behalf of the currently logged-in user.
+    - sendPublicChatMessage: This function sends a message to the public chat on behalf of the currently logged-in user.
     - sendCustomPublicMessage: This function sends a text message to the public chat, optionally including custom metadata.
       > **Note**: The custom messages sent by plugins are not automatically rendered by the client. To display these messages, a plugin must handle the rendering using `useLoadedChatMessages` and `useChatMessageDomElements`.
 
@@ -1039,7 +1034,7 @@ So the idea is that we have a `uiCommands` object and at a point, there will be 
 
 As these commands can change state in the back-end, "permission control" is available based on role for some of the Commands, those are:
   - chat:
-    - sendPublicMessage;
+    - sendPublicChatMessage;
     - sendCustomPublicMessage
 
 An example of the usage is displayed in the [Manifest](#manifest-json) section, but in general the idea is to have the same hierarchy as the server-commands from the SDK, see example ahead:
@@ -1047,9 +1042,6 @@ An example of the usage is displayed in the [Manifest](#manifest-json) section, 
 ```json
 "serverCommand": {
   "chat": {
-    "sendPublicChatMessage": {
-      ... // Settings for manifest
-    },
     "sendCustomPublicChatMessage": {
       ... // Settings for manifest
     }

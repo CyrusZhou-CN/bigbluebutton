@@ -389,7 +389,7 @@ const ChatMessage = React.forwardRef<ChatMessageRef, ChatMessageProps>(({
     return null;
   }, [message]);
   const isCustomPluginMessage: boolean = currentPluginMessageMetadata !== null && currentPluginMessageMetadata.custom;
-  const isMessageFromPlugin = message.messageType === ChatMessageType.PLUGIN;
+  const isCustomMessageFromPlugin: boolean = message.messageType === ChatMessageType.PLUGIN && isCustomPluginMessage;
 
   const dateTime = new Date(message?.createdAt);
   const formattedTime = intl.formatTime(dateTime, {
@@ -703,7 +703,7 @@ const ChatMessage = React.forwardRef<ChatMessageRef, ChatMessageProps>(({
     avatarDisplay = <i className={messageContent.avatarIcon} />;
   }
 
-  const showPluginMetadataFooter = !deleteTime && isMessageFromPlugin && currentUserIsModerator;
+  const showPluginMetadataFooter = !deleteTime && isCustomMessageFromPlugin && currentUserIsModerator;
 
   const contentElement = (
     <ChatMessageContentWrapper
@@ -772,7 +772,7 @@ const ChatMessage = React.forwardRef<ChatMessageRef, ChatMessageProps>(({
           </PluginInformationMetadata>
         )
       }
-      {(sameSender && !isMessageFromPlugin) && (
+      {(sameSender && !isCustomMessageFromPlugin) && (
         <ChatContentFooter>
           {!deleteTime && editTime && (
             <Tooltip title={intl.formatTime(editTime, { hour12: false })}>

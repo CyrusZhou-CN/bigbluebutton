@@ -147,7 +147,6 @@ trait SendGroupChatMessageMsgHdlr extends HandlerHelpers {
       plugin = getPluginManifestContentByName(pluginInstance, pluginName).get
     } yield {
       val isCustomPluginMessage = pluginName.nonEmpty && custom
-      val isCommonPluginMessage = pluginName.nonEmpty && !custom
 
       def checkServerCommandPermission(permissionList: Option[List[String]]): Boolean = {
         permissionList match {
@@ -158,9 +157,6 @@ trait SendGroupChatMessageMsgHdlr extends HandlerHelpers {
       if (isCustomPluginMessage) {
         val customMessagePermissions = ServerCommands.getPluginPermissionForCustomMessage(plugin)
         checkServerCommandPermission(customMessagePermissions)
-      } else if (isCommonPluginMessage) {
-        val commonMessagePermissions = ServerCommands.getPluginPermissionForCommonMessage(plugin)
-        checkServerCommandPermission(commonMessagePermissions)
       } else true
     }).getOrElse(true)
   }
