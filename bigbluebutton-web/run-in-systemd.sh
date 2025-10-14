@@ -35,6 +35,7 @@ systemd-run --user --pipe --wait --quiet --same-dir                   \
   --property=MemoryMax="${BBB_PRESENTATION_CONVERSION_MEMORY_MAX}"    \
   --property=MemorySwapMax=0                                          \
   --property=UMask=0022                                               \
+  --property=CollectMode=inactive-or-failed                           \
   "$@"
 
 exit $?   # propagate the child’s exit status
