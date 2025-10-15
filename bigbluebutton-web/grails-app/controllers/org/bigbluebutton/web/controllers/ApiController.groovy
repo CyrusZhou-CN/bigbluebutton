@@ -2005,7 +2005,6 @@ class ApiController {
   }
 
   private Map.Entry<String, String> validateRequest(ValidationService.ApiCall apiCall, HttpServletRequest request) {
-    request.getQueryString()
     Map<String, String> violations = validationService.validate(apiCall, request)
     Map.Entry<String, String> response = null
 
