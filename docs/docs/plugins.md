@@ -205,13 +205,9 @@ Here is as complete `manifest.json` example with all possible configurations:
       "permissions": ["moderator", "viewer"]
     }
   ],
-  "serverCommand": {
-    "chat": {
-      "sendCustomPublicChatMessage": {
-        "allowedRoles": ["presenter", "moderator"] // "moderator","presenter", "all", "viewer"
-      }
-    }
-  }
+  "serverCommandsPermission": {
+    "chat.sendCustomPublicChatMessage": ["presenter", "moderator"] // "moderator","presenter", "all", "viewer"
+  },
   "settingsSchema": [
     {
       "name": "myJson",
@@ -1032,24 +1028,19 @@ So the idea is that we have a `uiCommands` object and at a point, there will be 
     - save: this function saves the given text, locale and caption type
     - addLocale: this function sends a locale to be added to the available options
 
-As these commands can change state in the back-end, "permission control" is available based on role for some of the Commands, those are:
+As these commands can change state in the back-end, "permission control" is available based on role for some of the Commands (in the manifest), those are:
   - chat:
-    - sendPublicChatMessage;
-    - sendCustomPublicMessage
+    - sendCustomPublicMessage;
 
-An example of the usage is displayed in the [Manifest](#manifest-json) section, but in general the idea is to have the same hierarchy as the server-commands from the SDK, see example ahead:
+An example of the usage is displayed in the [Manifest](#manifest-json) section, but in general the idea is to have a similar hierarchy as the server-commands from the SDK, see example ahead:
 
 ```json
-"serverCommand": {
-  "chat": {
-    "sendCustomPublicChatMessage": {
-      ... // Settings for manifest
-    }
-  }
+"serverCommandsPermission": {
+  "chat.sendCustomPublicChatMessage": ["presenter"] // Could have all the other roles, see manifest section
 }
 ```
 
-For now, the only supported settings for those commands are `allowedRoles` which is a list with the roles that are allowed to send the command.
+If no permission is present in the manifest, then we consider that every user in the meeting can use the server-command.
 
 ### Dom Element Manipulation
 
