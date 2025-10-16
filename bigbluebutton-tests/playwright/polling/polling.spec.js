@@ -59,7 +59,7 @@ test.describe.parallel('Polling', { tag: '@ci' }, async () => {
     await polling.pollResultsInDifferentPresentation();
   });
 
-  test.describe.serial('Smart Slides', () => {
+  test.describe('Smart Slides', () => {
     test('A/B/C/D/E - One option answer', async () => {
       await polling.oneOptionAnswer();
     });
