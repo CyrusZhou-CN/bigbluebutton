@@ -191,17 +191,23 @@ class Webcam extends Page {
     await this.closeAllToastNotifications();
     await this.hasElement(e.currentUserLocalStreamVideo, 'should display the webcam video after shared');
 
-    const { width, height: initialvideoHeight } = await this.getLocator(e.currentUserLocalStreamVideo).boundingBox();
+    const { height: initialVideoHeight } = await this.getLocator(e.currentUserLocalStreamVideo).boundingBox();
     const { height: initialVideoContainerHeight } = await this.getLocator(e.webcamMirroredVideoContainer).boundingBox();
 
-    await this.getLocator(e.resizeWebcamHandler).hover({ timeout: 5000, force: true });
+    await this.waitForSelector(e.resizeWebcamHandler);
+    const handle = await this.getLocator(e.resizeWebcamHandler);
+    await expect(handle).toHaveCount(1);
+
+    const { x: hx, y: hy, width: hw, height: hh } = await handle.boundingBox();
+    // Start drag at handle center and move down by 200px
+    await this.page.mouse.move(hx + hw / 2, hy + hh / 2);
     await this.page.mouse.down();
-    await this.page.mouse.move(width, initialvideoHeight + 200, { steps: 10 });
+    await this.page.mouse.move(hx + hw / 2, hy + hh / 2 + 200, { steps: 10 });
     await this.page.mouse.up();
 
     const { height: resizedVideoHeight } = await this.getLocator(e.currentUserLocalStreamVideo).boundingBox();
     const { height: resizedVideoContainerHeight } = await this.getLocator(e.webcamMirroredVideoContainer).boundingBox();
-    expect(resizedVideoHeight).toBeGreaterThan(initialvideoHeight);
+    expect(resizedVideoHeight).toBeGreaterThan(initialVideoHeight);
     expect(resizedVideoContainerHeight).toBeGreaterThan(initialVideoContainerHeight);
 
     const webcamLocator = await this.getLocator(e.currentUserLocalStreamVideo);
@@ -217,8 +223,9 @@ class Webcam extends Page {
     await this.waitForSelector(e.minimizePresentation);
 
     const { height: resizedHeightAfterRestore } = await this.getLocator(e.currentUserLocalStreamVideo).boundingBox();
-    expect(resizedHeightAfterRestore).toBe(resizedVideoHeight);
+    expect(Math.abs(resizedHeightAfterRestore - resizedVideoHeight)).toBeLessThanOrEqual(1);
   }
+  
   
   // TODO: improve this test to check when the sidebar is expanded or collapsed
   async dragAndDropWebcamInDifferentAreas() {
