@@ -148,7 +148,6 @@ const UserListParticipantsPageContainer: React.FC<UserListParticipantsContainerP
     lastBreakoutRoom: c.lastBreakoutRoom,
     cameras: c.cameras,
     pinned: c.pinned,
-    raiseHand: c.raiseHand,
     away: c.away,
     reactionEmoji: c.reactionEmoji,
     avatar: c.avatar,

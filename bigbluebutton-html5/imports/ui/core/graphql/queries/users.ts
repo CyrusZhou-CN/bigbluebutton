@@ -14,7 +14,6 @@ subscription UserListSubscription($offset: Int!, $limit: Int!) {
                 order_by: [
                   {presenter: desc},
                   {role: asc},
-                  {raiseHandTime: asc_nulls_last},
                   {isDialIn: desc},
                   {whiteboardWriteAccess: desc},
                   {nameSortable: asc},
@@ -31,7 +30,6 @@ subscription UserListSubscription($offset: Int!, $limit: Int!) {
     color
     avatar
     away
-    raiseHand
     reactionEmoji
     avatar
     presenter
