@@ -607,7 +607,7 @@ const UserActions: React.FC<UserActionsProps> = ({
       dataTest: 'ejectCamera',
     },
     {
-      allowed: currentUser?.isModerator && type === 'raised-hand',
+      allowed: (currentUser?.isModerator || currentUser?.userId === user.userId) && type === 'raised-hand',
       key: 'lowerHand',
       label: intl.formatMessage(messages.lowerUserHand, { userName: user.name }),
       onClick: () => {

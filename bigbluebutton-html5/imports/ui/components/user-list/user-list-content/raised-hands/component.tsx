@@ -64,6 +64,7 @@ interface RaisedHandsComponentProps {
     usersPolicies: UsersPolicies;
   };
   pageId: string;
+  currentUser: User;
 }
 
 interface EmojiProps {
@@ -77,18 +78,14 @@ const RaisedHandsComponent: React.FC<RaisedHandsComponentProps> = ({
   lowerUserHands,
   meeting,
   pageId,
+  currentUser,
 }) => {
   const intl = useIntl();
 
   const [openUserAction, setOpenUserAction] = React.useState<string | null>(null);
 
-  const { data: currentUserData } = useCurrentUser((user) => ({
-    presenter: user.presenter,
-    isModerator: user.isModerator,
-  }));
-
-  const isPresenter = currentUserData?.presenter;
-  const isModerator = currentUserData?.isModerator;
+  const isPresenter = currentUser?.presenter;
+  const isModerator = currentUser?.isModerator;
 
   const Settings = getSettingsSingletonInstance();
   const animations = Settings?.application?.animations;
@@ -119,7 +116,7 @@ const RaisedHandsComponent: React.FC<RaisedHandsComponentProps> = ({
         <Styled.RaisedHandsItem key={`user-${user.userId}`}>
           <UserActions
             user={user as User}
-            currentUser={currentUserData as User}
+            currentUser={currentUser}
             lockSettings={meeting.lockSettings}
             usersPolicies={meeting.usersPolicies}
             pageId={pageId}
@@ -206,6 +203,12 @@ const RaisedHandsContainer: React.FC = () => {
   const presentationPage = presentationData?.pres_page_curr[0];
   const pageId = presentationPage?.pageId;
 
+  const { data: currentUserData } = useCurrentUser((user) => ({
+    presenter: user?.presenter,
+    isModerator: user?.isModerator,
+    userId: user?.userId,
+  }));
+
   if (usersError) {
     logger.error({
       logCode: 'raisehand_notifier_container_subscription_error',
@@ -213,7 +216,7 @@ const RaisedHandsContainer: React.FC = () => {
     }, 'Error on requesting raise hand data');
   }
 
-  if (!meeting || meetingLoading || presentationLoading) {
+  if (!meeting || !currentUserData || meetingLoading || presentationLoading) {
     return null;
   }
 
@@ -228,6 +231,7 @@ const RaisedHandsContainer: React.FC = () => {
         lockSettings: meeting.lockSettings as LockSettings ?? {},
         usersPolicies: (meeting.usersPolicies as UsersPolicies) ?? {},
       }}
+      currentUser={currentUserData as User}
     />
   );
 };
