@@ -1,10 +1,12 @@
 import styled from 'styled-components';
 import {
   colorGray,
+  colorPrimary,
 } from '/imports/ui/stylesheets/styled-components/palette';
 import {
   smPaddingX,
 } from '/imports/ui/stylesheets/styled-components/general';
+import Button from '/imports/ui/components/common/button/component';
 
 const RaisedHandsContainer = styled.div`
   display: flex;
@@ -21,30 +23,41 @@ const RaisedHandsTitle = styled.h2`
 `;
 
 const RaisedHandsItem = styled.div`
+  display: flex;
+  align-items: center;
   margin-left: 0.45rem;
-  padding-left: 0.6rem;
   padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 120ms ease-in-out;
+`;
 
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.06);
-  }
+const PositionLabel = styled.span`
+  margin: 0 0.25rem;
+  background-color: ${colorPrimary};
+  color: #ffffff;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.1rem 0.5rem;
+  flex-shrink: 0;
+`;
 
+// @ts-ignore - as button comes from JS, we can't provide its props
+const ClearButton = styled(Button)`
+  position: relative;
+  color: ${colorPrimary};
+  &:focus,
+  &:hover,
   &:active {
-    background-color: rgba(0, 0, 0, 0.1);
+    color: ${colorPrimary};
+    box-shadow: 0;
   }
-
-  &:focus-visible {
-    outline: 2px solid ${colorGray};
-    outline-offset: 2px;
-  }
+  padding: 1.2rem 0;
+  margin: ${smPaddingX};
 `;
 
 export default {
   RaisedHandsContainer,
   RaisedHandsTitle,
   RaisedHandsItem,
+  ClearButton,
+  PositionLabel,
 };
