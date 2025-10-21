@@ -29,17 +29,6 @@ const RaisedHandsItem = styled.div`
   padding-top: 0.5rem;
 `;
 
-const PositionLabel = styled.span`
-  margin: 0 0.25rem;
-  background-color: ${colorPrimary};
-  color: #ffffff;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.1rem 0.5rem;
-  flex-shrink: 0;
-`;
-
 // @ts-ignore - as button comes from JS, we can't provide its props
 const ClearButton = styled(Button)`
   position: relative;
@@ -59,5 +48,4 @@ export default {
   RaisedHandsTitle,
   RaisedHandsItem,
   ClearButton,
-  PositionLabel,
 };

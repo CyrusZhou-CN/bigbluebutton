@@ -132,13 +132,8 @@ const RaisedHandsComponent: React.FC<RaisedHandsComponentProps> = ({
             <UserListStyles.UserItemContents id={`raised-hand-index-${index}`} tabIndex={-1} role="listitem">
               <UserListStyles.Avatar
                 moderator={user.isModerator}
-                presenter={user.presenter}
-                muted={user.voiceUser?.muted}
-                listenOnly={user.voiceUser?.listenOnly || user.voiceUser?.listenOnlyInputDevice}
-                voice={user.voiceUser?.joined && !user.voiceUser?.deafened}
-                noVoice={!user.voiceUser?.joined || user.voiceUser?.deafened}
+                order={index + 1}
                 color={user.color}
-                whiteboardAccess={user.whiteboardWriteAccess}
                 animations={animations}
                 avatar={user.userAvatarFiltered}
                 isChrome={isChrome}
@@ -151,7 +146,6 @@ const RaisedHandsComponent: React.FC<RaisedHandsComponentProps> = ({
                 <UserListStyles.UserName>
                   <span>
                     {user.name}
-                    <Styled.PositionLabel>{index + 1}</Styled.PositionLabel>
                   </span>
                   &nbsp;
                   {(user.userId === Auth.userID) ? `(${intl.formatMessage(intlMessages.you)})` : ''}
