@@ -23,7 +23,6 @@ const RaisedHandsTitle = styled.h2`
 `;
 
 const RaisedHandsItem = styled.div`
-  display: flex;
   align-items: center;
   margin-left: 0.45rem;
   padding-top: 0.5rem;

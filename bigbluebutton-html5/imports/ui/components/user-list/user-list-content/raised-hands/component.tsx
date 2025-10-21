@@ -110,7 +110,7 @@ const RaisedHandsComponent: React.FC<RaisedHandsComponentProps> = ({
   return (
     <Styled.RaisedHandsContainer>
       <Styled.RaisedHandsTitle data-test="raisedHandsTitle">
-        {intl.formatMessage(intlMessages.raisedHandsTitle)}
+        {intl.formatMessage(intlMessages.raisedHandsTitle, { count: raisedHands.length })}
       </Styled.RaisedHandsTitle>
       {raisedHands.map((user, index) => (
         <Styled.RaisedHandsItem key={`user-${user.userId}`}>
