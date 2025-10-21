@@ -16,6 +16,7 @@ subscription RaisedHandUsers {
     isModerator
     raiseHand
     raiseHandTime
+    whiteboardWriteAccess
   }
 }`;
 

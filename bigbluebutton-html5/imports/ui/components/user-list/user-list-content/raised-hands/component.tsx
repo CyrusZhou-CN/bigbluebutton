@@ -11,6 +11,11 @@ import useCurrentUser from '/imports/ui/core/hooks/useCurrentUser';
 import Auth from '/imports/ui/services/auth';
 import browserInfo from '/imports/utils/browserInfo';
 import { getSettingsSingletonInstance } from '/imports/ui/services/settings';
+import UserActions from '../user-participants/user-list-participants/user-actions/component';
+import useMeeting from '/imports/ui/core/hooks/useMeeting';
+import { CURRENT_PRESENTATION_PAGE_SUBSCRIPTION, CurrentPresentationPagesSubscriptionResponse } from '/imports/ui/components/whiteboard/queries';
+import { LockSettings, UsersPolicies } from '/imports/ui/Types/meeting';
+import { User } from '/imports/ui/Types/user';
 
 const intlMessages = defineMessages({
   raisedHandsTitle: {
@@ -36,7 +41,7 @@ type RaisedHandUser = {
   isModerator?: boolean;
   raiseHand?: boolean;
   raiseHandTime?: string | null;
-  hasWhiteboardAccess?: boolean;
+  whiteboardWriteAccess?: boolean;
   userAvatarFiltered?: string;
   avatarContent?: React.ReactNode;
   voiceUser?: {
@@ -52,6 +57,13 @@ type RaisedHandUser = {
 interface RaisedHandsComponentProps {
   raisedHands: RaisedHandUser[];
   lowerUserHands: (userId: string) => void;
+  meeting: {
+    meetingId: string;
+    isBreakout: boolean;
+    lockSettings: LockSettings;
+    usersPolicies: UsersPolicies;
+  };
+  pageId: string;
 }
 
 interface EmojiProps {
@@ -63,8 +75,13 @@ interface EmojiProps {
 const RaisedHandsComponent: React.FC<RaisedHandsComponentProps> = ({
   raisedHands,
   lowerUserHands,
+  meeting,
+  pageId,
 }) => {
   const intl = useIntl();
+
+  const [openUserAction, setOpenUserAction] = React.useState<string | null>(null);
+
   const { data: currentUserData } = useCurrentUser((user) => ({
     presenter: user.presenter,
     isModerator: user.isModerator,
@@ -100,35 +117,48 @@ const RaisedHandsComponent: React.FC<RaisedHandsComponentProps> = ({
       </Styled.RaisedHandsTitle>
       {raisedHands.map((user, index) => (
         <Styled.RaisedHandsItem key={`user-${user.userId}`}>
-          <UserListStyles.UserItemContents id={`raised-hand-index-${index}`} tabIndex={-1} role="listitem">
-            <UserListStyles.Avatar
-              moderator={user.isModerator}
-              presenter={user.presenter}
-              muted={user.voiceUser?.muted}
-              listenOnly={user.voiceUser?.listenOnly || user.voiceUser?.listenOnlyInputDevice}
-              voice={user.voiceUser?.joined && !user.voiceUser?.deafened}
-              noVoice={!user.voiceUser?.joined || user.voiceUser?.deafened}
-              color={user.color}
-              whiteboardAccess={user.hasWhiteboardAccess}
-              animations={animations}
-              avatar={user.userAvatarFiltered}
-              isChrome={isChrome}
-              isFirefox={isFirefox}
-              isEdge={isEdge}
-            >
-              <Emoji key={handEmoji.id} emoji={handEmoji} native={handEmoji.native} size={emojiSize} />
-            </UserListStyles.Avatar>
-            <UserListStyles.UserNameContainer>
-              <UserListStyles.UserName>
-                <span>
-                  {user.name}
-                  <Styled.PositionLabel>{index + 1}</Styled.PositionLabel>
-                </span>
-                &nbsp;
-                {(user.userId === Auth.userID) ? `(${intl.formatMessage(intlMessages.you)})` : ''}
-              </UserListStyles.UserName>
-            </UserListStyles.UserNameContainer>
-          </UserListStyles.UserItemContents>
+          <UserActions
+            user={user as User}
+            currentUser={currentUserData as User}
+            lockSettings={meeting.lockSettings}
+            usersPolicies={meeting.usersPolicies}
+            pageId={pageId}
+            userListDropdownItems={[]}
+            open={user.userId === openUserAction}
+            setOpenUserAction={setOpenUserAction}
+            isBreakout={meeting.isBreakout}
+            type="raised-hand"
+          >
+            <UserListStyles.UserItemContents id={`raised-hand-index-${index}`} tabIndex={-1} role="listitem">
+              <UserListStyles.Avatar
+                moderator={user.isModerator}
+                presenter={user.presenter}
+                muted={user.voiceUser?.muted}
+                listenOnly={user.voiceUser?.listenOnly || user.voiceUser?.listenOnlyInputDevice}
+                voice={user.voiceUser?.joined && !user.voiceUser?.deafened}
+                noVoice={!user.voiceUser?.joined || user.voiceUser?.deafened}
+                color={user.color}
+                whiteboardAccess={user.whiteboardWriteAccess}
+                animations={animations}
+                avatar={user.userAvatarFiltered}
+                isChrome={isChrome}
+                isFirefox={isFirefox}
+                isEdge={isEdge}
+              >
+                <Emoji key={handEmoji.id} emoji={handEmoji} native={handEmoji.native} size={emojiSize} />
+              </UserListStyles.Avatar>
+              <UserListStyles.UserNameContainer>
+                <UserListStyles.UserName>
+                  <span>
+                    {user.name}
+                    <Styled.PositionLabel>{index + 1}</Styled.PositionLabel>
+                  </span>
+                  &nbsp;
+                  {(user.userId === Auth.userID) ? `(${intl.formatMessage(intlMessages.you)})` : ''}
+                </UserListStyles.UserName>
+              </UserListStyles.UserNameContainer>
+            </UserListStyles.UserItemContents>
+          </UserActions>
         </Styled.RaisedHandsItem>
       ))}
       {(isModerator || isPresenter) && (
@@ -164,6 +194,24 @@ const RaisedHandsContainer: React.FC = () => {
     });
   };
 
+  const {
+    data: meeting,
+    loading: meetingLoading,
+  } = useMeeting((m) => ({
+    lockSettings: m.lockSettings,
+    usersPolicies: m.usersPolicies,
+    isBreakout: m.isBreakout,
+    meetingId: m.meetingId,
+    breakoutPolicies: m.breakoutPolicies,
+  }));
+
+  const {
+    data: presentationData,
+    loading: presentationLoading,
+  } = useDeduplicatedSubscription<CurrentPresentationPagesSubscriptionResponse>(CURRENT_PRESENTATION_PAGE_SUBSCRIPTION);
+  const presentationPage = presentationData?.pres_page_curr[0];
+  const pageId = presentationPage?.pageId;
+
   if (usersError) {
     logger.error({
       logCode: 'raisehand_notifier_container_subscription_error',
@@ -171,10 +219,21 @@ const RaisedHandsContainer: React.FC = () => {
     }, 'Error on requesting raise hand data');
   }
 
+  if (!meeting || meetingLoading || presentationLoading) {
+    return null;
+  }
+
   return (
     <RaisedHandsComponent
       raisedHands={raisedHands}
       lowerUserHands={lowerUserHands}
+      pageId={pageId ?? ''}
+      meeting={{
+        meetingId: meeting.meetingId!,
+        isBreakout: !!meeting.isBreakout,
+        lockSettings: meeting.lockSettings as LockSettings ?? {},
+        usersPolicies: (meeting.usersPolicies as UsersPolicies) ?? {},
+      }}
     />
   );
 };
