@@ -57,7 +57,7 @@ class UserContent extends PureComponent {
               <UserPollsContainer isPresenter={currentUser?.presenter} />
               <BreakoutRoomContainer />
               <GenericSidekickContentNavButtonContainer />
-              {currentUser?.isModerator || currentUser?.presenter ? <RaisedHandsContainer /> : null}
+              <RaisedHandsContainer />
               <UserTitleContainer />
               <UserListParticipants compact={compact} />
             </Styled.List>
@@ -71,7 +71,7 @@ class UserContent extends PureComponent {
             <UserPollsContainer isPresenter={currentUser?.presenter} />
             <BreakoutRoomContainer />
             <GenericSidekickContentNavButtonContainer />
-            {currentUser?.isModerator || currentUser?.presenter ? <RaisedHandsContainer /> : null}
+            <RaisedHandsContainer />
             <UserTitleContainer />
             <UserListParticipants compact={compact} />
           </>
