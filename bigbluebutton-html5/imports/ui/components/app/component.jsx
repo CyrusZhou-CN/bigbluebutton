@@ -72,6 +72,10 @@ const intlMessages = defineMessages({
     id: 'app.toast.setEmoji.lowerHand',
     description: 'toast message for lowered hand notification',
   },
+  raisedHandNext: {
+    id: 'app.toast.raisedHandNext.label',
+    description: 'message used when user is next to be called on',
+  },
   away: {
     id: 'app.toast.setEmoji.away',
     description: 'toast message for set away notification',
@@ -167,6 +171,7 @@ class App extends Component {
       currentUserRaiseHand,
       intl,
       fitToWidth,
+      isCurrentUserNextRaisedHand,
     } = this.props;
 
     const { isJoinLogged } = this.state;
@@ -186,6 +191,12 @@ class App extends Component {
         notify(intl.formatMessage(intlMessages.raisedHand), 'info', 'user');
       } else {
         notify(intl.formatMessage(intlMessages.loweredHand), 'info', 'clear_status');
+      }
+    }
+
+    if (prevProps.isCurrentUserNextRaisedHand !== isCurrentUserNextRaisedHand) {
+      if (isCurrentUserNextRaisedHand === true) {
+        notify(intl.formatMessage(intlMessages.raisedHandNext), 'info', 'hand');
       }
     }
 

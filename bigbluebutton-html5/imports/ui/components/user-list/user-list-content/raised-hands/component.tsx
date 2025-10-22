@@ -3,7 +3,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useMutation } from '@apollo/client';
 import logger from '/imports/startup/client/logger';
 import Styled from './styles';
-import { RAISED_HAND_USERS } from './queries';
+import { RAISED_HAND_USERS } from '/imports/ui/core/graphql/queries/users';
 import { SET_RAISE_HAND } from '/imports/ui/core/graphql/mutations/userMutations';
 import useDeduplicatedSubscription from '/imports/ui/core/hooks/useDeduplicatedSubscription';
 import UserListStyles from '../user-participants/user-list-participants/list-item/styles';
