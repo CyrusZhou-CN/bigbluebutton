@@ -14,6 +14,8 @@ import useWhoIsTalking from '/imports/ui/core/hooks/useWhoIsTalking';
 import useWhoIsUnmuted from '/imports/ui/core/hooks/useWhoIsUnmuted';
 import { VIDEO_TYPES } from '/imports/ui/components/video-provider/enums';
 import { UserCameraHelperAreas } from '../../../plugins-engine/extensible-areas/components/user-camera-helper/types';
+import useDeduplicatedSubscription from '/imports/ui/core/hooks/useDeduplicatedSubscription';
+import { RAISED_HAND_USERS } from '/imports/ui/core/graphql/queries/users';
 
 interface VideoListItemContainerProps {
   numOfStreams: number;
@@ -71,6 +73,16 @@ const VideoListItemContainer: React.FC<VideoListItemContainerProps> = (props) =>
     muted: !unmutedUsers[userId],
   } : {};
 
+  type RaisedHandUser = {
+    userId: string;
+  };
+
+  const {
+    data: usersData,
+  } = useDeduplicatedSubscription<{ user: RaisedHandUser[] }>(RAISED_HAND_USERS);
+  const raisedHands: RaisedHandUser[] = usersData?.user ?? [];
+  const raisedHandIndex = raisedHands.findIndex((user) => user.userId === userId);
+
   return (
     <VideoListItem
       {...{
@@ -94,6 +106,7 @@ const VideoListItemContainer: React.FC<VideoListItemContainerProps> = (props) =>
       settingsSelfViewDisable={settingsSelfViewDisable}
       stream={stream}
       voiceUser={voiceUser}
+      raisedHandPosition={raisedHandIndex + 1}
     />
   );
 };
