@@ -337,7 +337,7 @@ const Avatar = styled.div<AvatarProps>`
   // ================ content ================
 
   /* ================ raised-hand order badge ================ */
-  ${({ order }) => (order !== undefined) && css`
+  ${({ order }) => (order !== undefined && order > 0) && css`
     &:before {
       content: "${order}";
       opacity: 1;

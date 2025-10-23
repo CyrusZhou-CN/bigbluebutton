@@ -107,6 +107,8 @@ const RaisedHandsComponent: React.FC<RaisedHandsComponentProps> = ({
     <em-emoji emoji={emoji} native={native} size={size} />
   );
 
+  const hideUserList = currentUser?.locked && meeting?.lockSettings?.hideUserList;
+
   return (
     <Styled.RaisedHandsContainer>
       <Styled.RaisedHandsTitle data-test="raisedHandsTitle">
@@ -129,7 +131,7 @@ const RaisedHandsComponent: React.FC<RaisedHandsComponentProps> = ({
             <UserListStyles.UserItemContents id={`raised-hand-index-${index}`} tabIndex={-1} role="listitem">
               <UserListStyles.Avatar
                 moderator={user.isModerator}
-                order={index + 1}
+                order={!hideUserList ? index + 1 : 0}
                 color={user.color}
                 animations={animations}
                 avatar={user.userAvatarFiltered}
@@ -207,6 +209,7 @@ const RaisedHandsContainer: React.FC = () => {
     presenter: user?.presenter,
     isModerator: user?.isModerator,
     userId: user?.userId,
+    locked: user?.locked ?? false,
   }));
 
   if (usersError) {

@@ -265,11 +265,11 @@ const VideoListItem: React.FC<VideoListItemProps> = (props) => {
     />
   );
   const renderRaiseHandElement = () => {
-    if (!raiseHand || raisedHandPosition <= 0) return null;
+    if (!raiseHand) return null;
 
     return (
       <Styled.RaiseHand>
-        <Styled.RaiseHandNumber>{raisedHandPosition}</Styled.RaiseHandNumber>
+        {raisedHandPosition > 0 && <Styled.RaiseHandNumber>{raisedHandPosition}</Styled.RaiseHandNumber>}
         <Styled.RaiseHandEmoji>✋</Styled.RaiseHandEmoji>
       </Styled.RaiseHand>
     );
