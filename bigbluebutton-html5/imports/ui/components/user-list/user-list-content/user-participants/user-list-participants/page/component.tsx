@@ -72,6 +72,7 @@ const UsersListParticipantsPage: React.FC<UsersListParticipantsPage> = ({
                 open={user.userId === openUserAction}
                 setOpenUserAction={setOpenUserAction}
                 isBreakout={isBreakout}
+                type="participant"
               >
                 <ListItem index={offset + idx} user={user} lockSettings={meeting.lockSettings} />
               </UserActions>
