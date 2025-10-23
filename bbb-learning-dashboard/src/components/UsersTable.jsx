@@ -244,6 +244,12 @@ class UsersTable extends React.Component {
             <th className="px-3.5 2xl:px-4 py-3 text-center">
               <FormattedMessage id="app.learningDashboard.usersTable.colRaiseHands" defaultMessage="Raise Hand" />
             </th>
+            <th className="px-3.5 2xl:px-4 py-3 text-center">
+              <FormattedMessage id="app.learningDashboard.usersTable.colTotalOfWhiteboardAnnotations" defaultMessage="Whiteboard Annotations" />
+            </th>
+            <th className="px-3.5 2xl:px-4 py-3 text-center">
+              <FormattedMessage id="app.learningDashboard.usersTable.colTotalOfSharedNotes" defaultMessage="Shared Notes" />
+            </th>
             <th
               className={`px-3.5 2xl:px-4 py-3 text-center ${tab === 'overview_activityscore' ? 'cursor-pointer' : ''}`}
               onClick={() => { if (tab === 'overview_activityscore') this.toggleOrder('activityScoreOrder'); }}
@@ -480,6 +486,22 @@ class UsersTable extends React.Component {
                             ✋
                             &nbsp;
                             {user.raiseHand.length}
+                          </span>
+                        ) : null }
+                    </td>
+                    <td className={`px-4 py-3 text-sm text-center ${opacity}`} data-test="userTotalOfWhiteboardAnnotationsDashboard">
+                      { user.totalOfWhiteboardAnnotations > 0
+                        ? (
+                          <span>
+                            {user.totalOfWhiteboardAnnotations}
+                          </span>
+                        ) : null }
+                    </td>
+                    <td className={`px-4 py-3 text-sm text-center ${opacity}`} data-test="userTotalOfSharedNotesDashboard">
+                      { user.totalOfSharedNotes > 0
+                        ? (
+                          <span>
+                            {user.totalOfSharedNotes}
                           </span>
                         ) : null }
                     </td>
