@@ -40,7 +40,6 @@ type RaisedHandUser = {
   presenter?: boolean;
   isModerator?: boolean;
   raiseHand?: boolean;
-  raiseHandTime?: string | null;
   whiteboardWriteAccess?: boolean;
   userAvatarFiltered?: string;
   avatarContent?: React.ReactNode;
@@ -65,6 +64,7 @@ interface RaisedHandsComponentProps {
   };
   pageId: string;
   currentUser: User;
+  hideUserList: boolean;
 }
 
 interface EmojiProps {
@@ -79,6 +79,7 @@ const RaisedHandsComponent: React.FC<RaisedHandsComponentProps> = ({
   meeting,
   pageId,
   currentUser,
+  hideUserList,
 }) => {
   const intl = useIntl();
 
@@ -92,10 +93,6 @@ const RaisedHandsComponent: React.FC<RaisedHandsComponentProps> = ({
 
   const { isChrome, isFirefox, isEdge } = browserInfo;
 
-  if (raisedHands.length === 0) {
-    return null;
-  }
-
   const handEmoji = {
     id: 'hand',
     native: '✋',
@@ -107,7 +104,9 @@ const RaisedHandsComponent: React.FC<RaisedHandsComponentProps> = ({
     <em-emoji emoji={emoji} native={native} size={size} />
   );
 
-  const hideUserList = currentUser?.locked && meeting?.lockSettings?.hideUserList;
+  if (raisedHands.length === 0) {
+    return null;
+  }
 
   return (
     <Styled.RaisedHandsContainer>
@@ -134,7 +133,6 @@ const RaisedHandsComponent: React.FC<RaisedHandsComponentProps> = ({
                 order={!hideUserList ? index + 1 : 0}
                 color={user.color}
                 animations={animations}
-                avatar={user.userAvatarFiltered}
                 isChrome={isChrome}
                 isFirefox={isFirefox}
                 isEdge={isEdge}
@@ -205,11 +203,15 @@ const RaisedHandsContainer: React.FC = () => {
   const presentationPage = presentationData?.pres_page_curr[0];
   const pageId = presentationPage?.pageId;
 
-  const { data: currentUserData } = useCurrentUser((user) => ({
+  const { data: currentUser } = useCurrentUser((user: Partial<User>) => ({
     presenter: user?.presenter,
     isModerator: user?.isModerator,
-    userId: user?.userId,
+    userId: user?.userId ?? '',
     locked: user?.locked ?? false,
+    color: user?.color,
+    name: user?.name,
+    raiseHand: user?.raiseHand,
+    whiteboardWriteAccess: user?.whiteboardWriteAccess,
   }));
 
   if (usersError) {
@@ -219,13 +221,20 @@ const RaisedHandsContainer: React.FC = () => {
     }, 'Error on requesting raise hand data');
   }
 
-  if (!meeting || !currentUserData || meetingLoading || presentationLoading) {
+  if (!meeting || !currentUser || meetingLoading || presentationLoading) {
     return null;
   }
 
+  const currentUserRaisedHand = currentUser && currentUser.raiseHand;
+  const hideUserList = (currentUser?.locked && meeting?.lockSettings?.hideUserList) ?? false;
+
+  const displayedRaisedHands = hideUserList && currentUserRaisedHand
+    ? [currentUser as RaisedHandUser, ...raisedHands]
+    : raisedHands;
+
   return (
     <RaisedHandsComponent
-      raisedHands={raisedHands}
+      raisedHands={displayedRaisedHands}
       lowerUserHands={lowerUserHands}
       pageId={pageId ?? ''}
       meeting={{
@@ -234,7 +243,8 @@ const RaisedHandsContainer: React.FC = () => {
         lockSettings: meeting.lockSettings as LockSettings ?? {},
         usersPolicies: (meeting.usersPolicies as UsersPolicies) ?? {},
       }}
-      currentUser={currentUserData as User}
+      currentUser={currentUser as User}
+      hideUserList={hideUserList}
     />
   );
 };
