@@ -8,8 +8,6 @@ on:
       - requested
 env:
   isCompleted: ${{ github.event.workflow_run.status == 'completed' }}
-  SPACES_ENDPOINT: https://bbb-ci-devops.sfo3.digitaloceanspaces.com
-  AWS_REGION: us-east-1
 jobs:
   get-pr-data:
     runs-on: ubuntu-latest
@@ -89,47 +87,19 @@ jobs:
           else
             echo "Required files not found in artifact"
           fi
-
   publish-test-results:
     runs-on: ubuntu-latest
     needs: get-pr-data
     if: ${{ needs.get-pr-data.outputs.pr-number && needs.get-pr-data.outputs.workflow-id }}
-    outputs:
-      report-url: ${{ steps.upload.outputs.report-url }}
     steps:
-      - name: Download all-bbb-artifacts.zip
-        uses: actions/download-artifact@v4
-        with:
-          name: all-bbb-artifacts
-          path: ./results
-
-      - name: Unzip test results
-        run: |
-          mkdir -p ./results/unzipped
-          unzip ./results/all-bbb-artifacts.zip -d ./results/unzipped
-
-      - name: Upload to DigitalOcean Spaces
-        id: upload
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AUTOMATED_TEST_RESULT_STORAGE_KEY }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AUTOMATED_TEST_RESULT_STORAGE_SECRET }}
-        run: |
-          sudo apt-get install -y awscli
-          UUID=$(uuidgen)
-          DATE=$(date +'%Y-%m-%d')
-          FOLDER="${DATE}/${UUID}"
-          aws s3 cp ./results/unzipped "s3://bbb-ci-devops/${FOLDER}/" \
-            --endpoint-url=https://sfo3.digitaloceanspaces.com \
-            --acl public-read \
-            --recursive
-          echo "report-url=${{ env.SPACES_ENDPOINT }}/${FOLDER}/index.html" >> $GITHUB_OUTPUT
-
+      - name: Publish Test Results
+        run: echo "hello world"
   comment-pr:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
-    needs: [get-pr-data, publish-test-results]
-    if: ${{ needs.get-pr-data.outputs.pr-number && needs.publish-test-results.outputs.report-url }}
+    needs: get-pr-data
+    if: ${{ needs.get-pr-data.outputs.pr-number && needs.get-pr-data.outputs.workflow-id }}
     steps:
       - name: Find Comment
         uses: peter-evans/find-comment@v3
@@ -138,7 +108,6 @@ jobs:
           issue-number: ${{ needs.get-pr-data.outputs.pr-number }}
           comment-author: "github-actions[bot]"
           body-includes: Automated tests Summary
-
       - name: Remove previous comment
         if: steps.fc.outputs.comment-id != ''
         uses: actions/github-script@v7
@@ -149,7 +118,14 @@ jobs:
               repo: context.repo.repo,
               comment_id: ${{ steps.fc.outputs.comment-id }}
             })
-
+      - name: In progress tests comment
+        if: ${{ !fromJson(env.isCompleted) }}
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ needs.get-pr-data.outputs.pr-number }}
+          body: |
+            <h1>Automated tests Summary</h1>
+            <h3><strong>:hourglass_flowing_sand:</strong> Tests are running...</h3>
       - name: Passing tests comment
         if: ${{ github.event.workflow_run.conclusion == 'success' }}
         uses: peter-evans/create-or-update-comment@v4
@@ -158,16 +134,15 @@ jobs:
           body: |
             <h1>Automated tests Summary</h1>
             <h3><strong>:white_check_mark:</strong> All the CI tests have passed!</h3>
-
-            🔗 **[View Test Report](${{ needs.publish-test-results.outputs.report-url }})**
-
       - name: Failing tests comment
         if: ${{ github.event.workflow_run.conclusion != 'success' && fromJson(env.isCompleted) }}
         uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ needs.get-pr-data.outputs.pr-number }}
           body: |
-            <h1>Automated tests Summary</h1>
+            <h1> Automated tests Summary</h1>
             <h3><strong>:rotating_light:</strong> Test workflow has failed</h3>
 
-            🔗 **[View Test Report](${{ needs.publish-test-results.outputs.report-url }})**
+            ___
+
+            [Click here](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ needs.get-pr-data.outputs.workflow-id }}) to check the action test reports (_to view the report locally, see the [docs](https://github.com/bigbluebutton/bigbluebutton/blob/v3.0.x-release/bigbluebutton-tests/playwright/README.md#check-test-results)_)
