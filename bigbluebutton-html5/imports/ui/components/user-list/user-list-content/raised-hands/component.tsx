@@ -2,6 +2,7 @@ import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useMutation } from '@apollo/client';
 import logger from '/imports/startup/client/logger';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import Styled from './styles';
 import { RAISED_HAND_USERS } from '/imports/ui/core/graphql/queries/users';
 import { SET_RAISE_HAND } from '/imports/ui/core/graphql/mutations/userMutations';
@@ -16,6 +17,9 @@ import useMeeting from '/imports/ui/core/hooks/useMeeting';
 import { CURRENT_PRESENTATION_PAGE_SUBSCRIPTION, CurrentPresentationPagesSubscriptionResponse } from '/imports/ui/components/whiteboard/queries';
 import { LockSettings, UsersPolicies } from '/imports/ui/Types/meeting';
 import { User } from '/imports/ui/Types/user';
+import deviceInfo from '/imports/utils/deviceInfo';
+
+const { isMobile } = deviceInfo;
 
 const intlMessages = defineMessages({
   raisedHandsTitle: {
@@ -104,6 +108,46 @@ const RaisedHandsComponent: React.FC<RaisedHandsComponentProps> = ({
     <em-emoji emoji={emoji} native={native} size={size} />
   );
 
+  const renderRaisedHandUser = (user: RaisedHandUser, index: number) => (
+    <Styled.RaisedHandsItem key={`user-${user.userId}`}>
+      <UserActions
+        user={user as User}
+        currentUser={currentUser}
+        lockSettings={meeting.lockSettings}
+        usersPolicies={meeting.usersPolicies}
+        pageId={pageId}
+        userListDropdownItems={[]}
+        open={user.userId === openUserAction}
+        setOpenUserAction={setOpenUserAction}
+        isBreakout={meeting.isBreakout}
+        type="raised-hand"
+      >
+        <UserListStyles.UserItemContents id={`raised-hand-index-${index}`} tabIndex={-1} role="listitem">
+          <UserListStyles.Avatar
+            moderator={user.isModerator}
+            order={!hideUserList ? index + 1 : 0}
+            color={user.color}
+            animations={animations}
+            isChrome={isChrome}
+            isFirefox={isFirefox}
+            isEdge={isEdge}
+          >
+            <Emoji key={handEmoji.id} emoji={handEmoji} native={handEmoji.native} size={emojiSize} />
+          </UserListStyles.Avatar>
+          <UserListStyles.UserNameContainer>
+            <UserListStyles.UserName>
+              <span>
+                {user.name}
+              </span>
+              &nbsp;
+              {(user.userId === Auth.userID) ? `(${intl.formatMessage(intlMessages.you)})` : ''}
+            </UserListStyles.UserName>
+          </UserListStyles.UserNameContainer>
+        </UserListStyles.UserItemContents>
+      </UserActions>
+    </Styled.RaisedHandsItem>
+  );
+
   if (raisedHands.length === 0) {
     return null;
   }
@@ -113,45 +157,31 @@ const RaisedHandsComponent: React.FC<RaisedHandsComponentProps> = ({
       <Styled.RaisedHandsTitle data-test="raisedHandsTitle">
         {intl.formatMessage(intlMessages.raisedHandsTitle, { count: raisedHands.length })}
       </Styled.RaisedHandsTitle>
-      {raisedHands.map((user, index) => (
-        <Styled.RaisedHandsItem key={`user-${user.userId}`}>
-          <UserActions
-            user={user as User}
-            currentUser={currentUser}
-            lockSettings={meeting.lockSettings}
-            usersPolicies={meeting.usersPolicies}
-            pageId={pageId}
-            userListDropdownItems={[]}
-            open={user.userId === openUserAction}
-            setOpenUserAction={setOpenUserAction}
-            isBreakout={meeting.isBreakout}
-            type="raised-hand"
-          >
-            <UserListStyles.UserItemContents id={`raised-hand-index-${index}`} tabIndex={-1} role="listitem">
-              <UserListStyles.Avatar
-                moderator={user.isModerator}
-                order={!hideUserList ? index + 1 : 0}
-                color={user.color}
-                animations={animations}
-                isChrome={isChrome}
-                isFirefox={isFirefox}
-                isEdge={isEdge}
+      {!isMobile ? (
+        <Styled.ScrollableList
+          role="tabpanel"
+          tabIndex={0}
+        >
+          <Styled.List>
+            <TransitionGroup>
+              <CSSTransition
+                classNames="transition"
+                appear
+                enter
+                exit={false}
+                timeout={0}
+                component="div"
               >
-                <Emoji key={handEmoji.id} emoji={handEmoji} native={handEmoji.native} size={emojiSize} />
-              </UserListStyles.Avatar>
-              <UserListStyles.UserNameContainer>
-                <UserListStyles.UserName>
-                  <span>
-                    {user.name}
-                  </span>
-                  &nbsp;
-                  {(user.userId === Auth.userID) ? `(${intl.formatMessage(intlMessages.you)})` : ''}
-                </UserListStyles.UserName>
-              </UserListStyles.UserNameContainer>
-            </UserListStyles.UserItemContents>
-          </UserActions>
-        </Styled.RaisedHandsItem>
-      ))}
+                <Styled.ListTransition>
+                  {raisedHands.map(renderRaisedHandUser) ?? null}
+                </Styled.ListTransition>
+              </CSSTransition>
+            </TransitionGroup>
+          </Styled.List>
+        </Styled.ScrollableList>
+      ) : (
+        raisedHands.map(renderRaisedHandUser) ?? null
+      )}
       {(isModerator || isPresenter) && (
         <Styled.ClearButton
           label={intl.formatMessage(intlMessages.lowerHandsLabel)}

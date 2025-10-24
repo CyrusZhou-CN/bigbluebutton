@@ -5,12 +5,21 @@ import {
 } from '/imports/ui/stylesheets/styled-components/palette';
 import {
   smPaddingX,
+  borderSize,
 } from '/imports/ui/stylesheets/styled-components/general';
 import Button from '/imports/ui/components/common/button/component';
+import StyledContent from '/imports/ui/components/user-list/user-list-content/styles';
+import deviceInfo from '/imports/utils/deviceInfo';
+
+const { isMobile } = deviceInfo;
 
 const RaisedHandsContainer = styled.div`
   display: flex;
   flex-direction: column;
+  
+  ${!isMobile && `
+    max-height: 30vh;
+  `}
 `;
 
 const RaisedHandsTitle = styled.h2`
@@ -42,9 +51,49 @@ const ClearButton = styled(Button)`
   margin: ${smPaddingX};
 `;
 
+const ScrollableList = styled(StyledContent.ScrollableList)``;
+const List = styled(StyledContent.List)``;
+const ListTransition = styled.div`
+  display: flex;
+  flex-flow: column;
+  padding: ${borderSize} 0 0 0;.
+  outline: none;
+  overflow: hidden;
+  flex-shrink: 1;
+
+  &.transition-enter,
+  &.transition-appear {
+    opacity: 0.01;
+  }
+
+  &.transition-enter-active,
+  &.transition-appear-active {
+    opacity: 1;
+    
+    &.animationsEnabled {
+      transition: all 600ms;
+    }
+  }
+
+  &.transition-leave {
+    opacity: 1;
+  }
+
+  &.transition-leave-active {
+    opacity: 0;
+
+    &.animationsEnabled {
+      transition: all 600ms;
+    }
+  }
+`;
+
 export default {
   RaisedHandsContainer,
   RaisedHandsTitle,
   RaisedHandsItem,
   ClearButton,
+  ScrollableList,
+  List,
+  ListTransition,
 };
