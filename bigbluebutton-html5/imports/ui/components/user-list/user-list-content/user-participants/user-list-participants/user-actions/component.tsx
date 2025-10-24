@@ -225,7 +225,7 @@ const UserActions: React.FC<UserActionsProps> = ({
   userListDropdownItems,
   open,
   setOpenUserAction,
-  type,
+  type = 'participant',
 }) => {
   const intl = useIntl();
   const layoutContextDispatch = layoutDispatch();

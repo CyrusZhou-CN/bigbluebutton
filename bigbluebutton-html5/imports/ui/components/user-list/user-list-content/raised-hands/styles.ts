@@ -45,7 +45,7 @@ const ClearButton = styled(Button)`
   &:hover,
   &:active {
     color: ${colorPrimary};
-    box-shadow: 0;
+    box-shadow: none;
   }
   padding: 1.2rem 0;
   margin: ${smPaddingX};
@@ -56,7 +56,7 @@ const List = styled(StyledContent.List)``;
 const ListTransition = styled.div`
   display: flex;
   flex-flow: column;
-  padding: ${borderSize} 0 0 0;.
+  padding: ${borderSize} 0 0 0;
   outline: none;
   overflow: hidden;
   flex-shrink: 1;
