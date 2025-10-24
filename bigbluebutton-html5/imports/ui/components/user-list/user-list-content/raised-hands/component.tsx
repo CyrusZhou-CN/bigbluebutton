@@ -131,6 +131,7 @@ const RaisedHandsComponent: React.FC<RaisedHandsComponentProps> = ({
             isChrome={isChrome}
             isFirefox={isFirefox}
             isEdge={isEdge}
+            data-test="avatarsWrapperAvatar"
           >
             <Emoji key={handEmoji.id} emoji={handEmoji} native={handEmoji.native} size={emojiSize} />
           </UserListStyles.Avatar>
