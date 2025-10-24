@@ -30,6 +30,7 @@ subscription UserListSubscription($offset: Int!, $limit: Int!) {
     color
     avatar
     away
+    raiseHand
     reactionEmoji
     avatar
     presenter

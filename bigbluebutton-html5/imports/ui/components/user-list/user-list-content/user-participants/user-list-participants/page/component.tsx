@@ -156,6 +156,7 @@ const UserListParticipantsPageContainer: React.FC<UserListParticipantsContainerP
     name: c.name,
     color: c.color,
     whiteboardWriteAccess: c.whiteboardWriteAccess,
+    raiseHand: c.raiseHand,
   }));
 
   const {
