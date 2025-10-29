@@ -65,6 +65,7 @@ interface VideoListItemProps {
     joined: boolean;
     deafened: boolean;
   };
+  raisedHandPosition: number;
 }
 
 const renderPluginItems = (
@@ -119,7 +120,7 @@ const VideoListItem: React.FC<VideoListItemProps> = (props) => {
     cameraId, numOfStreams, focused, onVideoItemMount, onVideoItemUnmount,
     makeDragOperations, dragging, draggingOver, isRTL, isStream, settingsSelfViewDisable,
     disabledCams, amIModerator, stream, setUserCamerasRequestedFromPlugin,
-    pluginUserCameraHelperPerPosition,
+    pluginUserCameraHelperPerPosition, raisedHandPosition,
   } = props;
 
   const intl = useIntl();
@@ -290,6 +291,16 @@ const VideoListItem: React.FC<VideoListItemProps> = (props) => {
       layoutContextDispatch={layoutContextDispatch}
     />
   );
+  const renderRaiseHandElement = () => {
+    if (!raiseHand) return null;
+
+    return (
+      <Styled.RaiseHand>
+        {raisedHandPosition > 0 && <Styled.RaiseHandNumber>{raisedHandPosition}</Styled.RaiseHandNumber>}
+        <Styled.RaiseHandEmoji>✋</Styled.RaiseHandEmoji>
+      </Styled.RaiseHand>
+    );
+  };
 
   const renderWebcamConnecting = () => (
     <Styled.WebcamConnecting
@@ -323,7 +334,7 @@ const VideoListItem: React.FC<VideoListItemProps> = (props) => {
   const renderDefaultButtons = () => (
     <>
       <Styled.TopBar>
-        {raiseHand && <Styled.RaiseHand>✋</Styled.RaiseHand>}
+        {renderRaiseHandElement()}
         <PinArea
           stream={stream}
           amIModerator={amIModerator}
