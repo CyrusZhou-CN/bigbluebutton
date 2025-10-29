@@ -155,9 +155,11 @@ const RaisedHandsComponent: React.FC<RaisedHandsComponentProps> = ({
 
   return (
     <Styled.RaisedHandsContainer>
-      <Styled.RaisedHandsTitle data-test="raisedHandsTitle">
-        {intl.formatMessage(intlMessages.raisedHandsTitle, { count: raisedHands.length })}
-      </Styled.RaisedHandsTitle>
+      <Styled.TitleContainer>
+        <Styled.RaisedHandsTitle data-test="raisedHandsTitle">
+          {intl.formatMessage(intlMessages.raisedHandsTitle, { count: raisedHands.length })}
+        </Styled.RaisedHandsTitle>
+      </Styled.TitleContainer>
       {!isMobile ? (
         <Styled.ScrollableList
           role="tabpanel"

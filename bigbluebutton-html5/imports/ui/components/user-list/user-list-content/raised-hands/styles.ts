@@ -29,12 +29,12 @@ const RaisedHandsTitle = styled.h2`
   padding: 0 ${smPaddingX};
   color: ${colorGray};
   margin: 0;
+  width: 100%;
 `;
 
 const RaisedHandsItem = styled.div`
   align-items: center;
   margin-left: 0.45rem;
-  padding-top: 0.5rem;
 `;
 
 // @ts-ignore - as button comes from JS, we can't provide its props
@@ -88,6 +88,8 @@ const ListTransition = styled.div`
   }
 `;
 
+const TitleContainer = styled(StyledContent.Container)``;
+
 export default {
   RaisedHandsContainer,
   RaisedHandsTitle,
@@ -96,4 +98,5 @@ export default {
   ScrollableList,
   List,
   ListTransition,
+  TitleContainer,
 };
