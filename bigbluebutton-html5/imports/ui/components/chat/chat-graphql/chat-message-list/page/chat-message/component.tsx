@@ -484,7 +484,7 @@ const ChatMessage = React.forwardRef<ChatMessageRef, ChatMessageProps>(({
           isSystemSender: true,
           component: (
             <ChatMessageTextContent
-              text={message.message}
+              text={message.messageAsHtml}
             />
           ),
           showAvatar: true,
@@ -499,7 +499,7 @@ const ChatMessage = React.forwardRef<ChatMessageRef, ChatMessageProps>(({
           isSystemSender: true,
           component: (
             <ChatMessageTextContent
-              text={message.message}
+              text={message.messageAsHtml}
             />
           ),
           showAvatar: true,
@@ -564,7 +564,7 @@ const ChatMessage = React.forwardRef<ChatMessageRef, ChatMessageProps>(({
             ? null
             : (
               <ChatMessageTextContent
-                text={message.message}
+                text={message.messageAsHtml}
               />
             ),
         };
@@ -581,7 +581,7 @@ const ChatMessage = React.forwardRef<ChatMessageRef, ChatMessageProps>(({
           showToolbar: true,
           component: (
             <ChatMessageTextContent
-              text={message.message}
+              text={message.messageAsHtml}
             />
           ),
         };
@@ -608,6 +608,7 @@ const ChatMessage = React.forwardRef<ChatMessageRef, ChatMessageProps>(({
   const {
     user,
     message: messageText,
+    messageAsHtml,
     messageId,
     chatId,
     chatEmphasizedText,
@@ -622,7 +623,7 @@ const ChatMessage = React.forwardRef<ChatMessageRef, ChatMessageProps>(({
         new CustomEvent(ChatEvents.CHAT_REPLY_INTENTION, {
           detail: {
             username: user?.name,
-            message: messageText,
+            message: messageAsHtml,
             messageId,
             chatId,
             emphasizedMessage: chatEmphasizedText,
@@ -643,7 +644,7 @@ const ChatMessage = React.forwardRef<ChatMessageRef, ChatMessageProps>(({
     }
   }, [
     user?.name,
-    messageText,
+    messageAsHtml,
     messageId,
     chatId,
     chatEmphasizedText,
@@ -676,7 +677,7 @@ const ChatMessage = React.forwardRef<ChatMessageRef, ChatMessageProps>(({
     } else {
       handler();
     }
-  }, [messageId, chatId, messageText, deactivateFocusTrap, keyboardFocused]);
+  }, [messageId, chatId, message, deactivateFocusTrap, keyboardFocused]);
 
   const onDelete = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.stopPropagation();
@@ -752,7 +753,7 @@ const ChatMessage = React.forwardRef<ChatMessageRef, ChatMessageProps>(({
       />
       {message.replyToMessage && !deleteTime && (
         <ChatMessageReplied
-          message={message.replyToMessage.message || ''}
+          message={message.replyToMessage.messageAsHtml || ''}
           sequence={message.replyToMessage.messageSequence}
           deletedByUser={message.replyToMessage.deletedBy?.name ?? null}
         />

@@ -101,7 +101,8 @@ trait SendGroupChatMessageMsgHdlr extends HandlerHelpers {
             }
           }
 
-          val gcMessage = GroupChatApp.toGroupChatMessage(sender, groupChatMsgReceived, emphasizedText, messageType)
+          val allowedHtmlElements = getConfigPropertyValueByPathAsBooleanOrElse(liveMeeting.clientSettings, "public.chat.markdownImageAllowed", false)
+          val gcMessage = GroupChatApp.toGroupChatMessage(sender, groupChatMsgReceived, emphasizedText, messageType, allowedHtmlElements)
 
           val allowSendPluginMessage =
             if (isPluginMessage) getAllowSendPluginMessage(liveMeeting.plugins, gcMessage, userState) else true
