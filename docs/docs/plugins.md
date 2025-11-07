@@ -1008,9 +1008,18 @@ As seen for the `useUiData`, the return type is well defined by the enum chosen 
 - presentation-area:
   - open: this function will open the presentation area content automatically;
   - close: this function will close the presentation area content automatically;
-- sidekick-options-container:
+- sidekick-options-container: **(deprecated - use [sidekickArea](#sidekickarea-ui-commands) instead)**
   - open: this function will open the sidekick options panel automatically;
   - close: this function will close the sidekick options panel automatically (and also the sidebar content if open, to avoid inconsistencies in ui);
+- sidekickArea:
+  - options:
+    - panel:
+      - open: this function will open the sidekick container automatically;
+      - close: this function will close the sidekick container (and sidebar content panel) automatically;
+    - renameGenericContentMenu: this function renames the menu name (option's name) of a Generic Sidekick Content. Takes `id` (string) and `newName` (string) as parameters;
+    - renameGenericContentSection: this function renames the section name (section that the option belongs to) of a Generic Sidekick Content. Takes `id` (string) and `newName` (string) as parameters;
+    - setMenuBadge: this function sets a badge on the sidekick option menu. Takes `id` (string) and `badgeContent` (string) as parameters;
+    - removeMenuBadge: this function removes the badge from the sidekick option menu. Takes `id` (string) as parameter;
 - user-status:
   - setAwayStatus: this function will set the away status of the user to a certain status;
 
@@ -1024,6 +1033,53 @@ See usage ahead:
 ```
 
 So the idea is that we have a `uiCommands` object and at a point, there will be the command to do the intended action, such as open the chat form and/or fill it, as demonstrated above
+
+#### SidekickArea UI Commands
+
+The `sidekickArea` commands allow plugins to control and customize the sidekick panel and its content options. These commands are particularly useful when working with Generic Sidekick Content.
+
+**Panel Controls:**
+
+```ts
+// Open the sidekick container
+pluginApi.uiCommands.sidekickArea.options.panel.open();
+
+// Close the sidekick container
+pluginApi.uiCommands.sidekickArea.options.panel.close();
+```
+
+**Badge Management:**
+
+Badges are visual indicators that can be displayed on sidekick menu options to show notifications or counts.
+
+```ts
+// Set a badge on a sidekick menu option
+pluginApi.uiCommands.sidekickArea.options.setMenuBadge(
+  'my-sidekick-content-id',
+  '5'  // Badge content (e.g., notification count)
+);
+
+// Remove a badge from a sidekick menu option
+pluginApi.uiCommands.sidekickArea.options.removeMenuBadge('my-sidekick-content-id');
+```
+
+**Renaming Content:**
+
+```ts
+// Rename the menu option name
+pluginApi.uiCommands.sidekickArea.options.renameGenericContentMenu(
+  'my-sidekick-content-id',
+  'New Menu Name'
+);
+
+// Rename the section that contains the menu option
+pluginApi.uiCommands.sidekickArea.options.renameGenericContentSection(
+  'my-sidekick-content-id',
+  'New Section Name'
+);
+```
+
+For a complete working example, see the [sample-generic-content-sidekick-plugin](https://github.com/bigbluebutton/bigbluebutton-html-plugin-sdk/tree/v0.0.x/samples/sample-generic-content-sidekick-plugin) in the SDK repository.
 
 ### Server Commands
 
